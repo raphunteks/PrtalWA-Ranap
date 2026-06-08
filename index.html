@@ -65,8 +65,14 @@
         .input-group label { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
         .phone-input { width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--text-primary); font-size: 1rem; outline: none; transition: border-color 0.2s; }
         .phone-input:focus { border-color: var(--accent); }
+        
         .btn-primary { background: var(--accent); color: #fff; border: none; padding: 1rem; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn-primary:hover { background: var(--accent-hover); }
+        
+        /* Tombol Logout */
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.75rem; border-radius: 10px; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 1rem; }
+        .btn-danger:hover { background: #ef4444; color: #fff; }
+
         .code-display { font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em; text-align: center; margin-top: 1rem; color: var(--accent); background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px; display: none; }
 
         .status-bar { margin-top: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; border-radius: 50px; background: rgba(0,0,0,0.1); font-size: 0.875rem; font-weight: 500; }
@@ -115,10 +121,11 @@
                     <div class="spinner" id="qrSpinner"></div>
                     <!-- QR IMAGE -->
                     <img id="qrImage" style="display: none;" alt="WhatsApp QR Code">
-                    <!-- CONNECTED BADGE (Disembunyikan di awal, dipanggil saat connected) -->
-                    <div id="connectedBadge" style="display: none; text-align: center; color: #22c55e;">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        <h3 style="margin-top: 1rem;">Tersambung</h3>
+                    <!-- CONNECTED BADGE (Dengan Tombol Logout) -->
+                    <div id="connectedBadge" style="display: none; text-align: center; color: #22c55e; width: 100%;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <h3 style="margin-top: 0.5rem;">Tersambung</h3>
+                        <button id="logoutBtn" class="btn-danger">Logout Bot</button>
                     </div>
                 </div>
             </div>
@@ -167,6 +174,7 @@
 
         const phoneInput = document.getElementById('phoneInput');
         const reqPairingBtn = document.getElementById('reqPairingBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
         const pairingCodeDisplay = document.getElementById('pairingCodeDisplay');
 
         // Toggle Theme
@@ -193,7 +201,7 @@
             });
         });
 
-        // FUNGSI PINTAR: Mengatur Tampilan Box QR (Tanpa Menghapus DOM)
+        // FUNGSI PINTAR: Mengatur Tampilan Box QR
         function showBoxState(state) {
             if(qrSpinner) qrSpinner.style.display = (state === 'loading') ? 'block' : 'none';
             if(qrImage) qrImage.style.display = (state === 'qr') ? 'block' : 'none';
@@ -232,7 +240,7 @@
 
         socket.on('connect_error', (err) => {
             console.warn('[Socket.io] Gagal terhubung ke Railway:', err.message);
-            showBoxState('loading'); // Kembalikan spinner bila error
+            showBoxState('loading'); 
             updateStatus('error', 'Gagal terhubung ke Server Bot.<br><small>Pastikan server Railway menyala.</small>');
         });
 
@@ -256,10 +264,14 @@
                 showBoxState('connected');
                 updateStatus('connected', 'WhatsApp Berhasil Terhubung! ✅');
                 if(loader) loader.classList.remove('active');
+            } else if (status === 'disconnected') {
+                // Respons real-time saat berhasil dilogout dari sistem backend
+                showBoxState('loading');
+                updateStatus('error', 'Sesi Logout! Menghasilkan ulang QR Code...');
             }
         });
 
-        // Request Pairing Code
+        // Event Request Pairing Code
         if(reqPairingBtn) {
             reqPairingBtn.addEventListener('click', () => {
                 const phone = phoneInput.value.replace(/\D/g, ''); 
@@ -269,6 +281,18 @@
                 }
                 if(loader) loader.classList.add('active');
                 socket.emit('request_pairing', phone);
+            });
+        }
+
+        // Event Tombol Logout
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                const isConfirm = confirm('⚠️ YAKIN INGIN LOGOUT?\n\nHal ini akan mengeluarkan bot dari WhatsApp. Anda harus melakukan Scan QR / Pairing Code lagi untuk menghidupkan bot.');
+                if(isConfirm) {
+                    showBoxState('loading');
+                    updateStatus('waiting', 'Sedang mengirim instruksi logout ke bot...');
+                    socket.emit('logout');
+                }
             });
         }
     </script>
