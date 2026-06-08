@@ -111,8 +111,15 @@
                     Buka WhatsApp > Tautkan Perangkat > Scan QR Code ini
                 </p>
                 <div class="qr-box" id="qrBox">
+                    <!-- LOADING SPINNER -->
                     <div class="spinner" id="qrSpinner"></div>
+                    <!-- QR IMAGE -->
                     <img id="qrImage" style="display: none;" alt="WhatsApp QR Code">
+                    <!-- CONNECTED BADGE (Disembunyikan di awal, dipanggil saat connected) -->
+                    <div id="connectedBadge" style="display: none; text-align: center; color: #22c55e;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <h3 style="margin-top: 1rem;">Tersambung</h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,26 +146,30 @@
 
     <script>
         // =========================================================================
-        // ✅ DOMAIN RAILWAY TELAH DIPERBARUI SESUAI REQUEST
+        // ✅ DOMAIN RAILWAY (BACKEND BOT)
         // =========================================================================
-        
         const BACKEND_URL = 'https://wtswebs-production.up.railway.app'; 
-        
         // =========================================================================
 
         const themeToggle = document.getElementById('themeToggle');
         const htmlElement = document.documentElement;
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
+        
         const loader = document.getElementById('loader');
         const statusBar = document.getElementById('statusBar');
         const statusText = document.getElementById('statusText');
-        const qrImage = document.getElementById('qrImage');
+        
+        // Element Box QR
         const qrSpinner = document.getElementById('qrSpinner');
+        const qrImage = document.getElementById('qrImage');
+        const connectedBadge = document.getElementById('connectedBadge');
+
         const phoneInput = document.getElementById('phoneInput');
         const reqPairingBtn = document.getElementById('reqPairingBtn');
         const pairingCodeDisplay = document.getElementById('pairingCodeDisplay');
 
+        // Toggle Theme
         if(themeToggle) {
             themeToggle.addEventListener('click', () => {
                 const currentTheme = htmlElement.getAttribute('data-theme');
@@ -168,6 +179,7 @@
             });
         }
 
+        // Toggle Tabs
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 try {
@@ -181,15 +193,26 @@
             });
         });
 
+        // FUNGSI PINTAR: Mengatur Tampilan Box QR (Tanpa Menghapus DOM)
+        function showBoxState(state) {
+            if(qrSpinner) qrSpinner.style.display = (state === 'loading') ? 'block' : 'none';
+            if(qrImage) qrImage.style.display = (state === 'qr') ? 'block' : 'none';
+            if(connectedBadge) connectedBadge.style.display = (state === 'connected') ? 'block' : 'none';
+            if(pairingCodeDisplay && state === 'connected') pairingCodeDisplay.style.display = 'none';
+        }
+
+        // FUNGSI PINTAR: Update Indikator Status Bawah
         function updateStatus(state, message) {
             if(!statusBar) return;
             statusBar.className = 'status-bar'; 
             if (state === 'connected') statusBar.classList.add('status-connected');
             if (state === 'error') statusBar.classList.add('status-error');
-            statusText.innerHTML = message; // Menggunakan innerHTML agar bisa memuat break tag <br> jika error
+            statusText.innerHTML = message; 
         }
 
-        // Koneksi Socket.io ke Railway
+        // ==========================================
+        // KONEKSI SOCKET.IO KE RAILWAY
+        // ==========================================
         const socket = io(BACKEND_URL, {
             transports: ['websocket', 'polling'],
             reconnectionAttempts: 10, 
@@ -198,22 +221,25 @@
         }); 
 
         socket.on('connect', () => {
+            showBoxState('loading');
             updateStatus('waiting', 'Terhubung! Meminta data dari WA Engine...');
+        });
+
+        socket.on('disconnect', () => {
+            showBoxState('loading');
+            updateStatus('error', 'Koneksi terputus! Menyambungkan ulang...');
         });
 
         socket.on('connect_error', (err) => {
             console.warn('[Socket.io] Gagal terhubung ke Railway:', err.message);
-            updateStatus('error', 'Gagal terhubung ke Server Railway.<br><small>Pastikan Railway aktif dan tidak ada error log.</small>');
-            if(qrSpinner) qrSpinner.style.display = 'none';
+            showBoxState('loading'); // Kembalikan spinner bila error
+            updateStatus('error', 'Gagal terhubung ke Server Bot.<br><small>Pastikan server Railway menyala.</small>');
         });
 
         socket.on('qr', (qrDataUrl) => {
-            if(qrSpinner) qrSpinner.style.display = 'none';
-            if(qrImage) {
-                qrImage.src = qrDataUrl;
-                qrImage.style.display = 'block';
-            }
-            updateStatus('waiting', 'Scan QR ini sekarang...');
+            if(qrImage) qrImage.src = qrDataUrl;
+            showBoxState('qr');
+            updateStatus('waiting', 'Menunggu Scan QR Code...');
         });
 
         socket.on('pairing_code', (code) => {
@@ -222,27 +248,18 @@
                 pairingCodeDisplay.style.display = 'block';
                 pairingCodeDisplay.textContent = code;
             }
-            updateStatus('waiting', 'Cek notifikasi WhatsApp Anda');
+            updateStatus('waiting', 'Cek notifikasi WhatsApp Anda untuk kode verifikasi');
         });
 
         socket.on('wa_status', (status) => {
             if (status === 'connected') {
+                showBoxState('connected');
                 updateStatus('connected', 'WhatsApp Berhasil Terhubung! ✅');
-                if(qrImage) qrImage.style.display = 'none';
-                if(qrSpinner) qrSpinner.style.display = 'none';
-                if(pairingCodeDisplay) pairingCodeDisplay.style.display = 'none';
-                
-                const qrBox = document.getElementById('qrBox');
-                if(qrBox) {
-                    qrBox.innerHTML = `
-                        <div style="text-align: center; color: #22c55e;">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                            <h3 style="margin-top: 1rem;">Tersambung</h3>
-                        </div>`;
-                }
+                if(loader) loader.classList.remove('active');
             }
         });
 
+        // Request Pairing Code
         if(reqPairingBtn) {
             reqPairingBtn.addEventListener('click', () => {
                 const phone = phoneInput.value.replace(/\D/g, ''); 
