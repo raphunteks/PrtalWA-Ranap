@@ -1,7 +1,7 @@
 {
-  "name": "axa-portalbotwa-frontend",
+  "name": "portal-ranap-bot-frontend",
   "version": "1.0.0",
-  "description": "Frontend Web Portal untuk Ultimate AI Financial Bot di Vercel",
+  "description": "Frontend Web Portal untuk Ranap Bot di Vercel",
   "main": "index.html",
   "scripts": {
     "dev": "npx serve ."
@@ -9,8 +9,8 @@
   "keywords": [
     "whatsapp",
     "bot",
-    "finance",
-    "ai",
+    "ranap",
+    "rsud",
     "portal",
     "vercel"
   ],
