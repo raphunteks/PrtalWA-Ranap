@@ -1,0 +1,19 @@
+{
+  "name": "axa-portalbotwa-frontend",
+  "version": "1.0.0",
+  "description": "Frontend Web Portal untuk Ultimate AI Financial Bot di Vercel",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve ."
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "finance",
+    "ai",
+    "portal",
+    "vercel"
+  ],
+  "author": "CTO Architect",
+  "license": "ISC"
+}
