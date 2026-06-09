@@ -3,298 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal - Ranap Bot</title>
+    <title>Portal - Ranap Bot Manager</title>
     
     <link rel="icon" type="image/png" href="axalogo.png">
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <style>
         :root[data-theme="dark"] {
-            --bg-color: #0f172a;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --glass-bg: rgba(30, 41, 59, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --mesh-1: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%);
-            --mesh-2: radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%);
-            --mesh-3: radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            --bg-color: #0f172a; --text-primary: #f8fafc; --text-secondary: #94a3b8;
+            --glass-bg: rgba(30, 41, 59, 0.6); --glass-border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --accent: #3b82f6; --accent-hover: #2563eb;
         }
-
         :root[data-theme="light"] {
-            --bg-color: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --mesh-1: radial-gradient(at 0% 0%, hsla(253,16%,90%,1) 0, transparent 50%);
-            --mesh-2: radial-gradient(at 50% 0%, hsla(225,39%,80%,1) 0, transparent 50%);
-            --mesh-3: radial-gradient(at 100% 0%, hsla(339,49%,80%,1) 0, transparent 50%);
+            --bg-color: #f1f5f9; --text-primary: #0f172a; --text-secondary: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.7); --glass-border: rgba(255, 255, 255, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --accent: #3b82f6; --accent-hover: #2563eb;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        body { background-color: var(--bg-color); background-image: var(--mesh-1), var(--mesh-2), var(--mesh-3); background-size: 200% 200%; animation: meshAnimation 15s ease infinite alternate; color: var(--text-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-        @keyframes meshAnimation { 0% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } 100% { background-position: 0% 100%; } }
-
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 24px; width: 100%; max-width: 480px; padding: 2.5rem 2rem; position: relative; overflow: hidden; }
+        body { background-color: var(--bg-color); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 24px; width: 100%; max-width: 700px; padding: 2.5rem 2rem; position: relative; overflow: hidden; height: fit-content; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         .title-wrapper { display: flex; align-items: center; gap: 1rem; }
-        .app-logo { width: 48px; height: 48px; object-fit: contain; border-radius: 12px; background: rgba(255, 255, 255, 0.05); padding: 4px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-        .title-group h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.025em; }
+        .app-logo { width: 48px; height: 48px; object-fit: contain; border-radius: 12px; background: rgba(255, 255, 255, 0.05); padding: 4px; border: 1px solid var(--glass-border); }
+        .title-group h1 { font-size: 1.35rem; font-weight: 700; }
         .title-group p { color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.25rem; }
-        .theme-toggle { background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 1.5rem; padding: 0.5rem; border-radius: 50%; transition: transform 0.2s; }
-        .theme-toggle:hover { transform: scale(1.1); }
+        .theme-toggle { background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 1.5rem; padding: 0.5rem; border-radius: 50%; }
 
         .tabs { display: flex; background: rgba(0, 0, 0, 0.1); border-radius: 12px; padding: 0.25rem; margin-bottom: 1.5rem; }
-        .tab-btn { flex: 1; padding: 0.75rem; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.875rem; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
+        .tab-btn { flex: 1; padding: 0.75rem; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
         .tab-btn.active { background: var(--bg-color); color: var(--text-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .tab-content { display: none; animation: fadeIn 0.4s ease-out forwards; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .qr-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-        .qr-box { width: 240px; height: 240px; background: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; padding: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); position: relative; }
-        .qr-box img { width: 100%; height: 100%; object-fit: contain; }
-
-        .pairing-container { display: flex; flex-direction: column; gap: 1rem; }
-        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .input-group label { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
-        .phone-input { width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--text-primary); font-size: 1rem; outline: none; transition: border-color 0.2s; }
-        .phone-input:focus { border-color: var(--accent); }
+        /* FORM STYLES */
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--text-primary); font-size: 0.95rem; outline: none; }
+        .form-control:focus { border-color: var(--accent); }
         
-        .btn-primary { background: var(--accent); color: #fff; border: none; padding: 1rem; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn-primary { background: var(--accent); color: #fff; border: none; padding: 0.85rem 1.5rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .btn-primary:hover { background: var(--accent-hover); }
-        
-        /* Tombol Logout */
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.75rem; border-radius: 10px; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 1rem; }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-danger:hover { background: #ef4444; color: #fff; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 6px; cursor: pointer; }
+        .btn-sm:hover { background: var(--accent); border-color: var(--accent); color: white; }
 
-        .code-display { font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em; text-align: center; margin-top: 1rem; color: var(--accent); background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px; display: none; }
+        /* BOTS LIST */
+        .bot-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+        .bot-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem; }
+        .bot-title { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+        .status-badge { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+        .status-badge.connected { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .status-badge.disconnected { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .status-badge.connecting, .status-badge.qr { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .bot-info { font-size: 0.85rem; color: var(--text-secondary); display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .bot-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
 
-        .status-bar { margin-top: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; border-radius: 50px; background: rgba(0,0,0,0.1); font-size: 0.875rem; font-weight: 500; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #eab308; box-shadow: 0 0 10px #eab308; animation: pulse 1.5s infinite; }
-        .status-text { color: var(--text-secondary); text-align: center; line-height: 1.4; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
-        .status-connected .status-dot { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
-        .status-error .status-dot { background: #ef4444; box-shadow: 0 0 10px #ef4444; animation: none; }
+        /* QR AREA */
+        .qr-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem 0; }
+        .qr-box { width: 240px; height: 240px; background: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; padding: 1rem; position: relative; }
+        .qr-box img { width: 100%; height: 100%; object-fit: contain; }
+        .code-display { font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em; text-align: center; margin-top: 1rem; color: var(--accent); background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px; }
 
-        .loader { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 10; border-radius: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .active-bot-notice { text-align: center; font-size: 0.9rem; color: #fbbf24; background: rgba(245, 158, 11, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600; }
+
+        .loader { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 10; opacity: 0; pointer-events: none; transition: 0.3s; border-radius: 24px; }
         .loader.active { opacity: 1; pointer-events: all; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--text-secondary); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* UPLOAD AREA */
+        .upload-area { background: rgba(0,0,0,0.1); border: 1px dashed var(--glass-border); border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
 
     <div class="glass-panel">
-        <div class="loader" id="loader">
-            <div class="spinner"></div>
-        </div>
+        <div class="loader" id="loader"><div class="spinner"></div></div>
 
         <div class="header">
             <div class="title-wrapper">
                 <img src="axalogo.png" alt="App Logo" class="app-logo" onerror="this.style.display='none';">
                 <div class="title-group">
                     <h1>Portal - Ranap Bot</h1>
-                    <p>Enterprise WhatsApp Hub</p>
+                    <p>Multi-Device Manager</p>
                 </div>
             </div>
-            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">🌙</button>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" data-target="qrTab">Scan QR</button>
-            <button class="tab-btn" data-target="pairingTab">Pairing Code</button>
+            <button class="tab-btn active" data-target="settingsTab">⚙️ Settings BOT</button>
+            <button class="tab-btn" data-target="qrTab">📱 Scan QR</button>
+            <button class="tab-btn" data-target="pairingTab">🔗 Pairing Code</button>
         </div>
 
-        <div id="qrTab" class="tab-content active">
-            <div class="qr-container">
-                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center;">
-                    Buka WhatsApp > Tautkan Perangkat > Scan QR Code ini
-                </p>
-                <div class="qr-box" id="qrBox">
-                    <!-- LOADING SPINNER -->
+        <!-- TAB SETTINGS BOT -->
+        <div id="settingsTab" class="tab-content active">
+            <div class="upload-area">
+                <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; display: block; margin-bottom: 0.5rem;">📥 Upload Script Handler Baru (.js)</label>
+                <input type="file" id="scriptUpload" accept=".js" style="font-size: 0.85rem;">
+                <button class="btn-sm" id="btnUploadScript" style="margin-top: 0.5rem;">Upload ke Redis</button>
+            </div>
+
+            <div style="background: var(--card-bg); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">➕ Buat Instance Bot Baru</h3>
+                <div class="input-group">
+                    <label>Nama/ID Bot (Tanpa Spasi, contoh: BotRajal1)</label>
+                    <input type="text" id="newBotId" class="form-control" placeholder="Masukkan ID unik">
+                </div>
+                <div class="input-group">
+                    <label>Pilih Script Handler</label>
+                    <select id="newBotScript" class="form-control">
+                        <option value="messageHandler.js">messageHandler.js</option>
+                    </select>
+                </div>
+                <button id="btnCreateBot" class="btn-primary">Generate QR Code</button>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">📋 Daftar Bot Berjalan</h3>
+            <div id="botListContainer">
+                <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 2rem 0;">Belum ada bot yang berjalan.</p>
+            </div>
+        </div>
+
+        <!-- TAB SCAN QR -->
+        <div id="qrTab" class="tab-content">
+            <div class="active-bot-notice" id="qrNotice">Pilih bot dari menu Settings untuk melihat QR.</div>
+            <div class="qr-container" id="qrContainerWrapper" style="display: none;">
+                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center;">Tautkan WhatsApp ke: <strong id="qrBotNameLabel"></strong></p>
+                <div class="qr-box">
                     <div class="spinner" id="qrSpinner"></div>
-                    <!-- QR IMAGE -->
                     <img id="qrImage" style="display: none;" alt="WhatsApp QR Code">
-                    <!-- CONNECTED BADGE (Dengan Tombol Logout) -->
                     <div id="connectedBadge" style="display: none; text-align: center; color: #22c55e; width: 100%;">
                         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                         <h3 style="margin-top: 0.5rem;">Tersambung</h3>
-                        <button id="logoutBtn" class="btn-danger">Logout Bot</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- TAB PAIRING CODE -->
         <div id="pairingTab" class="tab-content">
-            <div class="pairing-container">
-                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center;">
-                    Masukkan nomor WhatsApp Anda untuk menerima kode verifikasi perangkat.
-                </p>
+            <div class="active-bot-notice" id="pairNotice">Pilih bot dari menu Settings untuk meminta Pairing Code.</div>
+            <div id="pairContainerWrapper" style="display: none;">
+                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center; margin-bottom: 1rem;">Minta kode untuk Bot: <strong id="pairBotNameLabel"></strong></p>
                 <div class="input-group">
-                    <label for="phoneInput">Nomor WhatsApp</label>
-                    <input type="text" id="phoneInput" class="phone-input" placeholder="Misal: 6281234567890">
+                    <label>Nomor WhatsApp Tujuan</label>
+                    <input type="text" id="phoneInput" class="form-control" placeholder="Misal: 6281234567890">
                 </div>
                 <button class="btn-primary" id="reqPairingBtn">Minta Pairing Code</button>
-                <div id="pairingCodeDisplay" class="code-display"></div>
+                <div id="pairingCodeDisplay" class="code-display" style="display: none;"></div>
             </div>
         </div>
 
-        <div class="status-bar" id="statusBar">
-            <div class="status-dot" id="statusDot"></div>
-            <span class="status-text" id="statusText">Menghubungkan ke server bot...</span>
-        </div>
     </div>
 
     <script>
-        // =========================================================================
-        // ✅ DOMAIN RAILWAY (BACKEND BOT)
-        // =========================================================================
+        // ==========================================
+        // URL BACKEND
+        // ==========================================
         const BACKEND_URL = 'https://wtswebs-production.up.railway.app'; 
-        // =========================================================================
+        
+        // ==========================================
+        // STATE & UI ELEMENTS
+        // ==========================================
+        let appState = { bots: [], scripts: [] };
+        let selectedBotId = null;
 
-        const themeToggle = document.getElementById('themeToggle');
-        const htmlElement = document.documentElement;
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
         const loader = document.getElementById('loader');
-        const statusBar = document.getElementById('statusBar');
-        const statusText = document.getElementById('statusText');
+        const botListContainer = document.getElementById('botListContainer');
+        const newBotScript = document.getElementById('newBotScript');
         
-        // Element Box QR
+        // QR Tab
+        const qrNotice = document.getElementById('qrNotice');
+        const qrContainerWrapper = document.getElementById('qrContainerWrapper');
+        const qrBotNameLabel = document.getElementById('qrBotNameLabel');
         const qrSpinner = document.getElementById('qrSpinner');
         const qrImage = document.getElementById('qrImage');
         const connectedBadge = document.getElementById('connectedBadge');
 
+        // Pairing Tab
+        const pairNotice = document.getElementById('pairNotice');
+        const pairContainerWrapper = document.getElementById('pairContainerWrapper');
+        const pairBotNameLabel = document.getElementById('pairBotNameLabel');
         const phoneInput = document.getElementById('phoneInput');
         const reqPairingBtn = document.getElementById('reqPairingBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
         const pairingCodeDisplay = document.getElementById('pairingCodeDisplay');
 
-        // Toggle Theme
-        if(themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                const currentTheme = htmlElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                htmlElement.setAttribute('data-theme', newTheme);
-                themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-            });
+        // ==========================================
+        // UI HELPERS
+        // ==========================================
+        function formatUptime(startTime) {
+            if (!startTime) return 'N/A';
+            const diff = Math.floor((Date.now() - startTime) / 1000);
+            const h = Math.floor(diff / 3600);
+            const m = Math.floor((diff % 3600) / 60);
+            return `${h}h ${m}m`;
         }
 
-        // Toggle Tabs
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                try {
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    btn.classList.add('active');
-                    const targetId = btn.getAttribute('data-target');
-                    const targetEl = document.getElementById(targetId);
-                    if(targetEl) targetEl.classList.add('active');
-                } catch (err) {}
-            });
+        function setActiveTab(targetId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[data-target="${targetId}"]`).classList.add('active');
+            document.getElementById(targetId).classList.add('active');
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => setActiveTab(btn.getAttribute('data-target')));
         });
 
-        // FUNGSI PINTAR: Mengatur Tampilan Box QR
-        function showBoxState(state) {
-            if(qrSpinner) qrSpinner.style.display = (state === 'loading') ? 'block' : 'none';
-            if(qrImage) qrImage.style.display = (state === 'qr') ? 'block' : 'none';
-            if(connectedBadge) connectedBadge.style.display = (state === 'connected') ? 'block' : 'none';
-            if(pairingCodeDisplay && state === 'connected') pairingCodeDisplay.style.display = 'none';
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const html = document.documentElement;
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+
+        function updateBotListUI() {
+            if (appState.bots.length === 0) {
+                botListContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 2rem 0;">Belum ada bot yang berjalan.</p>';
+                return;
+            }
+            
+            botListContainer.innerHTML = appState.bots.map(b => `
+                <div class="bot-card">
+                    <div class="bot-header">
+                        <div class="bot-title">🤖 ${b.id}</div>
+                        <div class="status-badge ${b.status}">${b.status}</div>
+                    </div>
+                    <div class="bot-info">
+                        <div><strong>📜 Script:</strong> ${b.script}</div>
+                        <div><strong>⏱️ Uptime:</strong> <span class="uptime-counter" data-start="${b.startTime || ''}">${formatUptime(b.startTime)}</span></div>
+                    </div>
+                    <div class="bot-actions">
+                        <button class="btn-sm" onclick="selectBot('${b.id}')">📲 Lihat QR / Pairing</button>
+                        <button class="btn-danger" onclick="deleteBot('${b.id}')">🗑️ Hapus & Logout</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // FUNGSI PINTAR: Update Indikator Status Bawah
-        function updateStatus(state, message) {
-            if(!statusBar) return;
-            statusBar.className = 'status-bar'; 
-            if (state === 'connected') statusBar.classList.add('status-connected');
-            if (state === 'error') statusBar.classList.add('status-error');
-            statusText.innerHTML = message; 
+        function selectBot(botId) {
+            selectedBotId = botId;
+            const bot = appState.bots.find(b => b.id === botId);
+            
+            // Update UI QR
+            qrNotice.style.display = 'none';
+            qrContainerWrapper.style.display = 'flex';
+            qrBotNameLabel.textContent = botId;
+            
+            // Update UI Pairing
+            pairNotice.style.display = 'none';
+            pairContainerWrapper.style.display = 'block';
+            pairBotNameLabel.textContent = botId;
+            pairingCodeDisplay.style.display = 'none';
+
+            renderBotStatusUI(bot);
+            setActiveTab('qrTab');
         }
+
+        function renderBotStatusUI(bot) {
+            if (!bot) return;
+            qrSpinner.style.display = 'none';
+            qrImage.style.display = 'none';
+            connectedBadge.style.display = 'none';
+
+            if (bot.status === 'connected') {
+                connectedBadge.style.display = 'block';
+            } else if (bot.status === 'qr' && bot.qr) {
+                qrImage.src = bot.qr;
+                qrImage.style.display = 'block';
+            } else {
+                qrSpinner.style.display = 'block'; // connecting
+            }
+        }
+
+        setInterval(() => {
+            document.querySelectorAll('.uptime-counter').forEach(el => {
+                const start = el.getAttribute('data-start');
+                if (start) el.textContent = formatUptime(parseInt(start));
+            });
+        }, 60000);
 
         // ==========================================
-        // KONEKSI SOCKET.IO KE RAILWAY
+        // SOCKET.IO LOGIC
         // ==========================================
-        const socket = io(BACKEND_URL, {
-            transports: ['websocket', 'polling'],
-            reconnectionAttempts: 10, 
-            reconnectionDelay: 2000, 
-            timeout: 20000
-        }); 
+        const socket = io(BACKEND_URL, { transports: ['websocket', 'polling'] }); 
 
-        socket.on('connect', () => {
-            showBoxState('loading');
-            updateStatus('waiting', 'Terhubung! Meminta data dari WA Engine...');
+        socket.on('init_state', (data) => {
+            appState = data;
+            
+            // Update Script Dropdown
+            newBotScript.innerHTML = data.scripts.map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            updateBotListUI();
+            if (selectedBotId) selectBot(selectedBotId); // Re-render selected
         });
 
-        socket.on('disconnect', () => {
-            showBoxState('loading');
-            updateStatus('error', 'Koneksi terputus! Menyambungkan ulang...');
+        socket.on('bot_updated', (botData) => {
+            if(!botData) return;
+            const idx = appState.bots.findIndex(b => b.id === botData.id);
+            if (idx > -1) appState.bots[idx] = botData;
+            else appState.bots.push(botData);
+            
+            updateBotListUI();
+            
+            if (selectedBotId === botData.id) {
+                renderBotStatusUI(botData);
+            }
+            loader.classList.remove('active');
         });
 
-        socket.on('connect_error', (err) => {
-            console.warn('[Socket.io] Gagal terhubung ke Railway:', err.message);
-            showBoxState('loading'); 
-            updateStatus('error', 'Gagal terhubung ke Server Bot.<br><small>Pastikan server Railway menyala.</small>');
+        socket.on('bot_removed', (botId) => {
+            appState.bots = appState.bots.filter(b => b.id !== botId);
+            updateBotListUI();
+            if (selectedBotId === botId) {
+                selectedBotId = null;
+                qrNotice.style.display = 'block'; qrContainerWrapper.style.display = 'none';
+                pairNotice.style.display = 'block'; pairContainerWrapper.style.display = 'none';
+                setActiveTab('settingsTab');
+            }
+            loader.classList.remove('active');
         });
 
-        socket.on('qr', (qrDataUrl) => {
-            if(qrImage) qrImage.src = qrDataUrl;
-            showBoxState('qr');
-            updateStatus('waiting', 'Menunggu Scan QR Code...');
-        });
-
-        socket.on('pairing_code', (code) => {
-            if(loader) loader.classList.remove('active');
-            if(pairingCodeDisplay) {
+        socket.on('pairing_code', (data) => {
+            if (data.botId === selectedBotId) {
                 pairingCodeDisplay.style.display = 'block';
-                pairingCodeDisplay.textContent = code;
-            }
-            updateStatus('waiting', 'Cek notifikasi WhatsApp Anda untuk kode verifikasi');
-        });
-
-        socket.on('wa_status', (status) => {
-            if (status === 'connected') {
-                showBoxState('connected');
-                updateStatus('connected', 'WhatsApp Berhasil Terhubung! ✅');
-                if(loader) loader.classList.remove('active');
-            } else if (status === 'disconnected') {
-                // Respons real-time saat berhasil dilogout dari sistem backend
-                showBoxState('loading');
-                updateStatus('error', 'Sesi Logout! Menghasilkan ulang QR Code...');
+                pairingCodeDisplay.textContent = data.code;
+                loader.classList.remove('active');
             }
         });
 
-        // Event Request Pairing Code
-        if(reqPairingBtn) {
-            reqPairingBtn.addEventListener('click', () => {
-                const phone = phoneInput.value.replace(/\D/g, ''); 
-                if (!phone || phone.length < 10) {
-                    alert('Masukkan nomor WhatsApp yang valid (contoh: 62812...)');
-                    return;
-                }
-                if(loader) loader.classList.add('active');
-                socket.emit('request_pairing', phone);
-            });
+        socket.on('error', (msg) => {
+            alert('Error: ' + msg);
+            loader.classList.remove('active');
+        });
+
+        socket.on('script_uploaded', (name) => {
+            alert(`Script ${name} berhasil diupload & disinkronkan ke Redis!`);
+            loader.classList.remove('active');
+            document.getElementById('scriptUpload').value = '';
+        });
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+        document.getElementById('btnCreateBot').addEventListener('click', () => {
+            const botId = document.getElementById('newBotId').value.trim();
+            const scriptName = newBotScript.value;
+            if (!botId) return alert('ID Bot wajib diisi!');
+            
+            loader.classList.add('active');
+            socket.emit('create_bot', { botId, scriptName });
+            
+            // Otomatis menyeleksi bot ini dan beralih ke tab QR
+            selectedBotId = botId;
+            qrNotice.style.display = 'none';
+            qrContainerWrapper.style.display = 'flex';
+            qrBotNameLabel.textContent = botId;
+            pairNotice.style.display = 'none';
+            pairContainerWrapper.style.display = 'block';
+            pairBotNameLabel.textContent = botId;
+            
+            renderBotStatusUI({ status: 'connecting' }); // mock state sblm respon
+            setActiveTab('qrTab');
+            document.getElementById('newBotId').value = '';
+        });
+
+        reqPairingBtn.addEventListener('click', () => {
+            if (!selectedBotId) return alert('Pilih Bot terlebih dahulu!');
+            const phone = phoneInput.value.replace(/\D/g, ''); 
+            if (phone.length < 10) return alert('Nomor WA tidak valid.');
+            
+            loader.classList.add('active');
+            socket.emit('request_pairing', { botId: selectedBotId, phoneNumber: phone });
+        });
+
+        // Global function for dynamic list
+        window.deleteBot = function(botId) {
+            if(confirm(`⚠️ Yakin ingin Logout dan Menghapus bot [${botId}] secara permanen?`)) {
+                loader.classList.add('active');
+                socket.emit('delete_bot', { botId });
+            }
         }
 
-        // Event Tombol Logout
-        if(logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-                const isConfirm = confirm('⚠️ YAKIN INGIN LOGOUT?\n\nHal ini akan mengeluarkan bot dari WhatsApp. Anda harus melakukan Scan QR / Pairing Code lagi untuk menghidupkan bot.');
-                if(isConfirm) {
-                    showBoxState('loading');
-                    updateStatus('waiting', 'Sedang mengirim instruksi logout ke bot...');
-                    socket.emit('logout');
-                }
-            });
-        }
+        // Upload Script File
+        document.getElementById('btnUploadScript').addEventListener('click', () => {
+            const fileInput = document.getElementById('scriptUpload');
+            if (fileInput.files.length === 0) return alert('Pilih file .js terlebih dahulu!');
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                loader.classList.add('active');
+                socket.emit('upload_script', { fileName: file.name, content });
+            };
+            reader.readAsText(file);
+        });
+
     </script>
 </body>
 </html>
