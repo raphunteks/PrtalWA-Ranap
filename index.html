@@ -32,8 +32,8 @@
         .title-group p { color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.25rem; }
         .theme-toggle { background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 1.5rem; padding: 0.5rem; border-radius: 50%; }
 
-        .tabs { display: flex; background: rgba(0, 0, 0, 0.1); border-radius: 12px; padding: 0.25rem; margin-bottom: 1.5rem; }
-        .tab-btn { flex: 1; padding: 0.75rem; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
+        .tabs { display: flex; background: rgba(0, 0, 0, 0.1); border-radius: 12px; padding: 0.25rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.25rem; }
+        .tab-btn { flex: 1; padding: 0.75rem; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; cursor: pointer; border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
         .tab-btn.active { background: var(--bg-color); color: var(--text-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .tab-content { display: none; animation: fadeIn 0.4s ease-out forwards; }
         .tab-content.active { display: block; }
@@ -78,6 +78,22 @@
 
         /* UPLOAD AREA */
         .upload-area { background: rgba(0,0,0,0.1); border: 1px dashed var(--glass-border); border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1.5rem; }
+        
+        /* TERMINAL LOGS AREA */
+        .terminal-window {
+            background: #0f172a; border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 1rem; height: 400px; overflow-y: auto;
+            font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem;
+            color: #e2e8f0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; gap: 0.3rem;
+        }
+        .terminal-window::-webkit-scrollbar { width: 8px; }
+        .terminal-window::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .log-entry { line-height: 1.4; word-wrap: break-word; }
+        .log-time { color: #64748b; margin-right: 0.5rem; user-select: none; }
+        .log-error .log-msg { color: #ef4444; }
+        .log-warn .log-msg { color: #f59e0b; }
+        .log-info .log-msg { color: #10b981; }
     </style>
 </head>
 <body>
@@ -97,9 +113,10 @@
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" data-target="settingsTab">⚙️ Settings BOT</button>
+            <button class="tab-btn active" data-target="settingsTab">⚙️ Settings</button>
             <button class="tab-btn" data-target="qrTab">📱 Scan QR</button>
-            <button class="tab-btn" data-target="pairingTab">🔗 Pairing Code</button>
+            <button class="tab-btn" data-target="pairingTab">🔗 Pairing</button>
+            <button class="tab-btn" data-target="logsTab">📟 Live Logs</button>
         </div>
 
         <!-- TAB SETTINGS BOT -->
@@ -161,6 +178,17 @@
             </div>
         </div>
 
+        <!-- TAB LIVE LOGS TERMINAL -->
+        <div id="logsTab" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; color: var(--text-primary);">📟 Output Railway</h3>
+                <button class="btn-sm" id="btnClearLogs">🗑️ Clear</button>
+            </div>
+            <div id="terminalWindow" class="terminal-window">
+                <!-- Logs will be appended here -->
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -194,6 +222,10 @@
         const phoneInput = document.getElementById('phoneInput');
         const reqPairingBtn = document.getElementById('reqPairingBtn');
         const pairingCodeDisplay = document.getElementById('pairingCodeDisplay');
+
+        // Logs Tab
+        const terminalWindow = document.getElementById('terminalWindow');
+        const btnClearLogs = document.getElementById('btnClearLogs');
 
         // ==========================================
         // UI HELPERS
@@ -288,6 +320,23 @@
             });
         }, 60000);
 
+        // Terminal Log Appender
+        function appendTerminalLog(logData) {
+            const div = document.createElement('div');
+            div.className = `log-entry log-${logData.type}`;
+            div.innerHTML = `<span class="log-time">[${logData.time}]</span> <span class="log-msg">${logData.message}</span>`;
+            terminalWindow.appendChild(div);
+            
+            // Auto scroll to bottom smoothly
+            terminalWindow.scrollTop = terminalWindow.scrollHeight;
+        }
+
+        btnClearLogs.addEventListener('click', () => {
+            terminalWindow.innerHTML = '';
+            const t = new Date().toLocaleTimeString('id-ID', { hour12: false });
+            appendTerminalLog({ time: t, message: "--- Logs Cleared ---", type: "info" });
+        });
+
         // ==========================================
         // SOCKET.IO LOGIC
         // ==========================================
@@ -295,12 +344,21 @@
 
         socket.on('init_state', (data) => {
             appState = data;
-            
             // Update Script Dropdown
             newBotScript.innerHTML = data.scripts.map(s => `<option value="${s}">${s}</option>`).join('');
-            
             updateBotListUI();
-            if (selectedBotId) selectBot(selectedBotId); // Re-render selected
+            if (selectedBotId) selectBot(selectedBotId);
+        });
+
+        // Listen for log history on connection
+        socket.on('init_logs', (logsArray) => {
+            terminalWindow.innerHTML = '';
+            logsArray.forEach(appendTerminalLog);
+        });
+
+        // Listen for new incoming logs
+        socket.on('terminal_log', (logData) => {
+            appendTerminalLog(logData);
         });
 
         socket.on('bot_updated', (botData) => {
@@ -359,7 +417,6 @@
             loader.classList.add('active');
             socket.emit('create_bot', { botId, scriptName });
             
-            // Otomatis menyeleksi bot ini dan beralih ke tab QR
             selectedBotId = botId;
             qrNotice.style.display = 'none';
             qrContainerWrapper.style.display = 'flex';
@@ -382,7 +439,6 @@
             socket.emit('request_pairing', { botId: selectedBotId, phoneNumber: phone });
         });
 
-        // Global function for dynamic list
         window.deleteBot = function(botId) {
             if(confirm(`⚠️ Yakin ingin Logout dan Menghapus bot [${botId}] secara permanen?`)) {
                 loader.classList.add('active');
@@ -390,7 +446,6 @@
             }
         }
 
-        // Upload Script File
         document.getElementById('btnUploadScript').addEventListener('click', () => {
             const fileInput = document.getElementById('scriptUpload');
             if (fileInput.files.length === 0) return alert('Pilih file .js terlebih dahulu!');
@@ -405,7 +460,6 @@
             };
             reader.readAsText(file);
         });
-
     </script>
 </body>
 </html>
