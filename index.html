@@ -211,7 +211,7 @@
         const loader = document.getElementById('loader');
         const botListContainer = document.getElementById('botListContainer');
         const newBotScript = document.getElementById('newBotScript');
-        const scriptList = document.getElementById('scriptList'); // Datalist element
+        const scriptList = document.getElementById('scriptList'); 
         
         // QR Tab
         const qrNotice = document.getElementById('qrNotice');
@@ -236,12 +236,19 @@
         // ==========================================
         // UI HELPERS
         // ==========================================
+        
+        // FORMAT UPTIME SINKRON DENGAN WA (!runtime) - Berjalan realtime
         function formatUptime(startTime) {
             if (!startTime) return 'N/A';
             const diff = Math.floor((Date.now() - startTime) / 1000);
-            const h = Math.floor(diff / 3600);
-            const m = Math.floor((diff % 3600) / 60);
-            return `${h}h ${m}m`;
+            if (diff < 0) return '00:00:00';
+            
+            const d = Math.floor(diff / 86400);
+            const h = Math.floor((diff % 86400) / 3600).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            const s = Math.floor(diff % 60).toString().padStart(2, '0');
+            
+            return d > 0 ? `${d} Hari, ${h}:${m}:${s}` : `${h}:${m}:${s}`;
         }
 
         function setActiveTab(targetId) {
@@ -319,12 +326,13 @@
             }
         }
 
+        // AUTO-UPDATE UPTIME SETIAP DETIK (Sinkron dengan WA !runtime)
         setInterval(() => {
             document.querySelectorAll('.uptime-counter').forEach(el => {
                 const start = el.getAttribute('data-start');
                 if (start) el.textContent = formatUptime(parseInt(start));
             });
-        }, 60000);
+        }, 1000);
 
         // Terminal Log Appender
         function appendTerminalLog(logData) {
@@ -419,7 +427,7 @@
         // ==========================================
         document.getElementById('btnCreateBot').addEventListener('click', () => {
             const botId = document.getElementById('newBotId').value.trim();
-            const scriptName = newBotScript.value.trim(); // Ambil nilai dari input teks (bisa manual)
+            const scriptName = newBotScript.value.trim(); 
             
             if (!botId) return alert('ID Bot wajib diisi!');
             if (!scriptName) return alert('Nama Script Handler wajib diisi!');
