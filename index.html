@@ -133,13 +133,18 @@
                     <label>Nama/ID Bot (Tanpa Spasi, contoh: BotRajal1)</label>
                     <input type="text" id="newBotId" class="form-control" placeholder="Masukkan ID unik">
                 </div>
+                
+                <!-- INPUT SCRIPT MANUAL / DATALIST -->
                 <div class="input-group">
-                    <label>Pilih Script Handler</label>
-                    <select id="newBotScript" class="form-control">
-                        <option value="messageHandler.js">messageHandler.js</option>
-                    </select>
+                    <label>Pilih / Ketik Script Handler</label>
+                    <input type="text" id="newBotScript" list="scriptList" class="form-control" placeholder="Pilih dari daftar atau ketik manual..." value="messageHandler.js">
+                    <datalist id="scriptList">
+                        <option value="messageHandler.js">
+                    </datalist>
+                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.4rem; display: block;">*Bisa pilih dari daftar, atau ketik nama script secara manual jika file baru saja Anda upload ke GitHub (misal: messageHandlerV2.js).</small>
                 </div>
-                <button id="btnCreateBot" class="btn-primary">Generate QR Code</button>
+
+                <button id="btnCreateBot" class="btn-primary">Generate QR / Siapkan Bot</button>
             </div>
 
             <h3 style="margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">📋 Daftar Bot Berjalan</h3>
@@ -206,6 +211,7 @@
         const loader = document.getElementById('loader');
         const botListContainer = document.getElementById('botListContainer');
         const newBotScript = document.getElementById('newBotScript');
+        const scriptList = document.getElementById('scriptList'); // Datalist element
         
         // QR Tab
         const qrNotice = document.getElementById('qrNotice');
@@ -344,8 +350,10 @@
 
         socket.on('init_state', (data) => {
             appState = data;
-            // Update Script Dropdown
-            newBotScript.innerHTML = data.scripts.map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            // Mengupdate pilihan Datalist dari script yang terdeteksi
+            scriptList.innerHTML = data.scripts.map(s => `<option value="${s}">`).join('');
+            
             updateBotListUI();
             if (selectedBotId) selectBot(selectedBotId);
         });
@@ -411,8 +419,10 @@
         // ==========================================
         document.getElementById('btnCreateBot').addEventListener('click', () => {
             const botId = document.getElementById('newBotId').value.trim();
-            const scriptName = newBotScript.value;
+            const scriptName = newBotScript.value.trim(); // Ambil nilai dari input teks (bisa manual)
+            
             if (!botId) return alert('ID Bot wajib diisi!');
+            if (!scriptName) return alert('Nama Script Handler wajib diisi!');
             
             loader.classList.add('active');
             socket.emit('create_bot', { botId, scriptName });
