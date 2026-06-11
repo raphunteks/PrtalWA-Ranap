@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal - Ranap Bot Manager</title>
     
-    <link rel="icon" type="image/png" href="axalogo.png">
+    <!-- ========================================== -->
+    <!-- 1. SEO & LINK PREVIEW (OPEN GRAPH) -->
+    <!-- ========================================== -->
+    <title>Portal - Ranap Bot Manager</title>
+    <meta name="title" content="Portal - Ranap Bot Manager">
+    <meta name="description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph / WhatsApp / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Portal - Ranap Bot Manager">
+    <meta property="og:description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
+    <!-- Menggunakan parameter v=2 agar cache gambar lama di sosmed ter-refresh otomatis -->
+    <meta property="og:image" itemprop="image" content="./axalogo.png?v=2">
+    <meta property="og:image:secure_url" content="./axalogo.png?v=2">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Logo Ranap Bot">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Portal - Ranap Bot Manager">
+    <meta property="twitter:description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
+    <meta property="twitter:image" content="./axalogo.png?v=2">
+
+    <!-- ========================================== -->
+    <!-- 2. FAVICON FIXED (DIPERBAIKI) -->
+    <!-- ========================================== -->
+    <!-- Penambahan ?v=2 dan apple-touch-icon untuk mengatasi bug cache browser/github -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./axalogo.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="./axalogo.png?v=2">
+    <link rel="shortcut icon" href="./axalogo.png?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="./axalogo.png?v=2">
+
+    <!-- ========================================== -->
+    <!-- CORE SCRIPTS & STYLES -->
+    <!-- ========================================== -->
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <style>
         :root[data-theme="dark"] {
@@ -103,7 +137,7 @@
 
         <div class="header">
             <div class="title-wrapper">
-                <img src="axalogo.png" alt="App Logo" class="app-logo" onerror="this.style.display='none';">
+                <img src="./axalogo.png?v=2" alt="App Logo" class="app-logo" onerror="this.style.display='none';">
                 <div class="title-group">
                     <h1>Portal - Ranap Bot</h1>
                     <p>Multi-Device Manager</p>
