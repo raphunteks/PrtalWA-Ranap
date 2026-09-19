@@ -35,753 +35,8 @@
     <!-- Socket.IO Client -->
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 
-    <style>
-        /* ========================================================================= */
-        /* DENTS WEB BOT OFFICIAL DESIGN SYSTEM & CSS VARIABLES                      */
-        /* ========================================================================= */
-        :root, :root[data-theme="blue-cyan"], :root[data-theme="dark"] {
-            --dark-bg: #071018;
-            --dark-card-bg: #0d1a26;
-            --dark-secondary-bg: #122334;
-            --dark-text-color: #f0fdfa;
-            --dark-secondary-text-color: #94a3b8;
-            --dark-primary-accent: #06b6d4;
-            --dark-accent-hover: #0891b2;
-            --dark-border-color: rgba(6, 182, 212, 0.12);
-            --dark-border-solid: #1e3a52;
-            --glass-card: rgba(13, 26, 38, 0.88);
-            --badge-bg: rgba(6, 182, 212, 0.08);
-            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            --header-bg: rgba(7, 16, 24, 0.92);
-            --sidebar-bg: #0d1a26;
-        }
-
-        :root[data-theme="light"] {
-            --dark-bg: #f0f9ff;
-            --dark-card-bg: #ffffff;
-            --dark-secondary-bg: #f8fafc;
-            --dark-text-color: #0f172a;
-            --dark-secondary-text-color: #475569;
-            --dark-primary-accent: #0284c7;
-            --dark-accent-hover: #0369a1;
-            --dark-border-color: rgba(2, 132, 199, 0.12);
-            --dark-border-solid: #e2e8f0;
-            --glass-card: rgba(255, 255, 255, 0.95);
-            --badge-bg: rgba(2, 132, 199, 0.06);
-            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-            --header-bg: rgba(240, 249, 255, 0.92);
-            --sidebar-bg: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', 'Inter', sans-serif;
-            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
-        }
-
-        body {
-            background-color: var(--dark-bg);
-            color: var(--dark-text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* SCROLLBAR CUSTOM */
-        ::-webkit-scrollbar { width: 7px; height: 7px; }
-        ::-webkit-scrollbar-track { background: var(--dark-bg); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* ========================================================================= */
-        /* TOP NAVBAR SHELL                                                          */
-        /* ========================================================================= */
-        .navbar-shell {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: var(--header-bg);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--dark-border-solid);
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar-brand-slot {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .brand-logo {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 3px;
-            border: 1px solid var(--dark-border-solid);
-        }
-
-        .brand-text-group h1 {
-            font-family: 'Fugaz One', 'Outfit', sans-serif;
-            font-size: 1.35rem;
-            letter-spacing: 0.5px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }
-
-        .brand-text-group p {
-            font-size: 0.75rem;
-            color: var(--dark-secondary-text-color);
-            font-weight: 500;
-        }
-
-        .navbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .server-status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            background: var(--dark-secondary-bg);
-            border: 1px solid var(--dark-border-solid);
-            font-size: 0.78rem;
-            font-weight: 600;
-        }
-
-        .server-status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #ef4444;
-        }
-        .server-status-dot.online {
-            background-color: #22c55e;
-            box-shadow: 0 0 8px #22c55e;
-        }
-
-        .nav-tool-btn {
-            background: var(--dark-secondary-bg);
-            border: 1px solid var(--dark-border-solid);
-            color: var(--dark-text-color);
-            padding: 0.45rem 0.85rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: all 0.2s ease;
-        }
-        .nav-tool-btn:hover {
-            border-color: var(--dark-primary-accent);
-            color: var(--dark-primary-accent);
-            transform: translateY(-1px);
-        }
-
-        /* ========================================================================= */
-        /* MAIN LAYOUT WITH SIDEBAR DOCK                                             */
-        /* ========================================================================= */
-        .app-container {
-            display: flex;
-            flex: 1;
-            min-height: calc(100vh - 65px);
-        }
-
-        .sidebar-dock {
-            width: 250px;
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--dark-border-solid);
-            padding: 1.25rem 0.85rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            flex-shrink: 0;
-        }
-
-        .sidebar-heading {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            color: var(--dark-secondary-text-color);
-            padding: 0.6rem 0.75rem 0.3rem;
-        }
-
-        .dock-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            color: var(--dark-secondary-text-color);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .dock-item i { font-size: 1.15rem; }
-        .dock-item:hover {
-            background: var(--dark-secondary-bg);
-            color: var(--dark-text-color);
-            border-color: var(--dark-border-color);
-        }
-        .dock-item.active {
-            background: var(--accent-gradient);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
-        }
-
-        .main-stage {
-            flex: 1;
-            padding: 1.75rem;
-            max-width: 1350px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* ========================================================================= */
-        /* DENTS WEB BOT SHINY TEXT & STATUS BADGES                                  */
-        /* ========================================================================= */
-        .dents-shiny-text {
-            background-image: linear-gradient(120deg, #38bdf8 0%, #38bdf8 35%, #ffffff 50%, #38bdf8 65%, #38bdf8 100%);
-            background-size: 200% auto;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: dents-shine 2.8s linear infinite;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        @keyframes dents-shine {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        .bot-status-dot {
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            display: inline-block;
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            border: 2px solid var(--dark-card-bg);
-        }
-        .bot-status-dot.is-online {
-            background-color: #22c55e;
-            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-            animation: pulse-green 2s infinite;
-        }
-        .bot-status-dot.is-offline { background-color: #94a3b8; }
-        .bot-status-dot.is-connecting { background-color: #f59e0b; animation: pulse-yellow 2s infinite; }
-        .bot-status-dot.is-qr { background-color: #3b82f6; }
-
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-        @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-            70% { box-shadow: 0 0 0 7px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
-
-        /* ========================================================================= */
-        /* SUMMARY METRICS CARDS                                                     */
-        /* ========================================================================= */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.75rem;
-        }
-
-        .metric-card {
-            background: var(--dark-card-bg);
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 14px;
-            padding: 1.25rem 1.15rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-        .metric-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--dark-primary-accent);
-        }
-
-        .metric-info h4 {
-            font-size: 0.8rem;
-            color: var(--dark-secondary-text-color);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.35rem;
-        }
-        .metric-info .val {
-            font-size: 1.65rem;
-            font-weight: 800;
-            color: var(--dark-text-color);
-            line-height: 1;
-        }
-
-        .metric-icon-wrap {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            background: var(--dark-secondary-bg);
-            border: 1px solid var(--dark-border-solid);
-        }
-
-        /* ========================================================================= */
-        /* TOOLBAR FILTER & SEARCH (DENTS WEB BOT LIST BOT TOOLBAR)                  */
-        /* ========================================================================= */
-        .toolbar-filter-col {
-            background: var(--dark-card-bg);
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 12px;
-            padding: 0.65rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.85rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-tabs {
-            display: flex;
-            background: var(--dark-secondary-bg);
-            padding: 0.25rem;
-            border-radius: 8px;
-            gap: 0.25rem;
-        }
-
-        .filter-btn {
-            background: transparent;
-            border: none;
-            color: var(--dark-secondary-text-color);
-            padding: 0.45rem 0.95rem;
-            border-radius: 6px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            transition: all 0.2s ease;
-        }
-        .filter-btn.active {
-            background: var(--dark-card-bg);
-            color: var(--dark-text-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .filter-badge {
-            font-size: 0.72rem;
-            padding: 0.1rem 0.45rem;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .search-box-wrap {
-            position: relative;
-            min-width: 260px;
-        }
-        .search-box-wrap i {
-            position: absolute;
-            left: 0.85rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--dark-secondary-text-color);
-            font-size: 0.9rem;
-        }
-        .search-input {
-            width: 100%;
-            padding: 0.5rem 0.85rem 0.5rem 2.3rem;
-            border-radius: 8px;
-            border: 1px solid var(--dark-border-solid);
-            background: var(--dark-secondary-bg);
-            color: var(--dark-text-color);
-            font-size: 0.85rem;
-            outline: none;
-        }
-        .search-input:focus { border-color: var(--dark-primary-accent); }
-
-        /* ========================================================================= */
-        /* DENTS WEB BOT CARDS (EXACT BOT-ROW & DESKTOP-STATS-GRID)                  */
-        /* ========================================================================= */
-        .bot-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-
-        .bot-row {
-            background: var(--dark-card-bg);
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 14px;
-            padding: 1.15rem 1.35rem;
-            display: grid;
-            grid-template-columns: minmax(260px, 1.2fr) minmax(360px, 2fr) auto;
-            align-items: center;
-            gap: 1.25rem;
-            transition: border-color 0.2s ease, transform 0.2s ease;
-        }
-        .bot-row:hover {
-            border-color: var(--dark-primary-accent);
-            transform: translateY(-2px);
-        }
-
-        .bot-main-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .bot-avatar-wrap {
-            position: relative;
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-        }
-
-        .bot-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 12px;
-            object-fit: cover;
-            background: var(--dark-secondary-bg);
-            border: 1px solid var(--dark-border-solid);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: var(--dark-primary-accent);
-        }
-
-        .bot-identity {
-            min-width: 0;
-        }
-
-        .bot-name-line {
-            display: flex;
-            align-items: center;
-            gap: 0.55rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .bot-name {
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: var(--dark-text-color);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .plan-badge-plain {
-            font-size: 0.72rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 6px;
-            background: var(--badge-bg);
-            border: 1px solid var(--dark-border-solid);
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .bot-profile-name {
-            font-size: 0.8rem;
-            color: var(--dark-secondary-text-color);
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        /* 4-BOX METRIC GRID PERSIS DENTS WEB BOT */
-        .desktop-stats-grid {
-            background: var(--dark-secondary-bg);
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            overflow: hidden;
-        }
-
-        .stat-card-box {
-            border-right: 1px solid var(--dark-border-solid);
-            padding: 0.55rem 0.5rem;
-            text-align: center;
-        }
-        .stat-card-box:last-child { border-right: none; }
-
-        .stat-card-label {
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--dark-secondary-text-color);
-            letter-spacing: 0.5px;
-            margin-bottom: 0.2rem;
-        }
-        .stat-card-val {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--dark-text-color);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .bot-action-buttons {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-action-sm {
-            padding: 0.5rem 0.85rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid var(--dark-border-solid);
-            background: var(--dark-secondary-bg);
-            color: var(--dark-text-color);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            transition: all 0.2s ease;
-        }
-        .btn-action-sm:hover {
-            border-color: var(--dark-primary-accent);
-            color: var(--dark-primary-accent);
-        }
-        .btn-action-sm.btn-danger-hover:hover {
-            border-color: #ef4444;
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.08);
-        }
-
-        /* ========================================================================= */
-        /* RUANG KENDALI (CONNECT & PAIRING VIEW)                                     */
-        /* ========================================================================= */
-        .ruang-kendali-header {
-            margin-bottom: 1.75rem;
-            border-bottom: 1px solid var(--dark-border-solid);
-            padding-bottom: 1rem;
-        }
-        .ruang-kendali-header h2 {
-            font-size: 1.45rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .ruang-kendali-header p {
-            color: var(--dark-secondary-text-color);
-            font-size: 0.88rem;
-            margin-top: 0.35rem;
-        }
-
-        .connect-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-        @media (max-width: 900px) {
-            .connect-grid { grid-template-columns: 1fr; }
-            .bot-row { grid-template-columns: 1fr; }
-        }
-
-        .content-card {
-            background: var(--dark-card-bg);
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 16px;
-            padding: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.15rem;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: var(--dark-secondary-text-color);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.45rem;
-        }
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            border: 1px solid var(--dark-border-solid);
-            background: var(--dark-secondary-bg);
-            color: var(--dark-text-color);
-            font-size: 0.92rem;
-            outline: none;
-        }
-        .form-control:focus {
-            border-color: var(--dark-primary-accent);
-        }
-
-        .btn-primary-dents {
-            background: var(--accent-gradient);
-            color: #ffffff;
-            border: none;
-            padding: 0.85rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            width: 100%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
-            transition: all 0.2s ease;
-        }
-        .btn-primary-dents:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        /* STATUS KONEKSI PANEL */
-        .status-koneksi-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-            min-height: 380px;
-            text-align: center;
-        }
-
-        .qr-display-frame {
-            width: 250px;
-            height: 250px;
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-            margin-bottom: 1rem;
-        }
-        .qr-display-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .pairing-code-frame {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: 0.25em;
-            color: var(--dark-primary-accent);
-            background: var(--dark-secondary-bg);
-            border: 2px dashed var(--dark-border-solid);
-            padding: 1.25rem 2rem;
-            border-radius: 14px;
-            margin: 1rem 0;
-            display: inline-block;
-            user-select: all;
-        }
-
-        /* ========================================================================= */
-        /* GATEWAY API TESTER & TERMINAL                                             */
-        /* ========================================================================= */
-        .terminal-window {
-            background: #06080c;
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 12px;
-            padding: 1.25rem;
-            height: 480px;
-            overflow-y: auto;
-            font-family: 'JetBrains Mono', 'Consolas', monospace;
-            font-size: 0.82rem;
-            color: #cbd5e1;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
-        }
-        .log-entry { line-height: 1.5; word-wrap: break-word; }
-        .log-time { color: #64748b; margin-right: 0.6rem; user-select: none; }
-        .log-info .log-msg { color: #10b981; }
-        .log-warn .log-msg { color: #f59e0b; }
-        .log-error .log-msg { color: #ef4444; }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-card {
-            background: var(--dark-card-bg);
-            border: 1px solid var(--dark-border-solid);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 500px;
-            padding: 1.75rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--dark-primary-accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    <!-- Dents Web BOT Official External Stylesheet -->
+    <link rel="stylesheet" href="./style.css?v=2.1">
 </head>
 <body>
 
@@ -789,13 +44,18 @@
     <!-- 1. TOP NAVBAR SHELL PERSIS DENTS WEB BOT                                  -->
     <!-- ========================================================================= -->
     <header class="navbar-shell" id="mainNavbar">
-        <a href="#" class="navbar-brand-slot">
-            <img src="./axalogo.png?v=2" alt="Dents Web BOT Logo" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png';">
-            <div class="brand-text-group">
-                <h1>Dents Web BOT</h1>
-                <p>Dents Web WhatsApp Gateway Manager</p>
-            </div>
-        </a>
+        <div class="navbar-left-cluster">
+            <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Buka Menu Navigasi" title="Menu Navigasi">
+                <i class="bi bi-list"></i>
+            </button>
+            <a href="#" class="navbar-brand-slot">
+                <img src="./axalogo.png?v=2" alt="Dents Web BOT Logo" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png';">
+                <div class="brand-text-group">
+                    <h1>Dents Web BOT</h1>
+                    <p>Dents Web WhatsApp Gateway Manager</p>
+                </div>
+            </a>
+        </div>
 
         <div class="navbar-actions">
             <div class="server-status-pill" id="serverStatusPill">
@@ -823,8 +83,21 @@
     <!-- ========================================================================= -->
     <div class="app-container">
         
+        <!-- SIDEBAR BACKDROP FOR MOBILE -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
         <!-- SIDEBAR DOCK -->
-        <aside class="sidebar-dock">
+        <aside class="sidebar-dock" id="sidebarDock">
+            <div class="sidebar-mobile-header">
+                <div class="sidebar-mobile-brand">
+                    <img src="./axalogo.png?v=2" alt="Dents Web BOT Logo" class="brand-logo" style="width: 32px; height: 32px;">
+                    <span style="font-family: 'Fugaz One', 'Outfit', sans-serif; font-size: 1.1rem; color: var(--dark-text-color);">Dents Web BOT</span>
+                </div>
+                <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Tutup Menu">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
             <div class="sidebar-heading">Menu Utama</div>
             <a class="dock-item active" data-view="viewListBot">
                 <i class="bi bi-robot"></i>
@@ -902,7 +175,7 @@
                         <button class="filter-btn" data-filter="offline">Offline <span class="filter-badge" id="filterCountOffline">0</span></button>
                     </div>
 
-                    <div style="display: flex; gap: 0.75rem; align-items: center; flex: 1; justify-content: flex-end;">
+                    <div class="toolbar-action-group">
                         <div class="search-box-wrap">
                             <i class="bi bi-search"></i>
                             <input type="text" class="search-input" id="searchBotInput" placeholder="Cari ID Bot atau nomor WhatsApp...">
@@ -1109,28 +382,30 @@
                 </div>
 
                 <div class="content-card" style="max-width: 800px; margin: 0 auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
-                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Gateway Engine</td>
-                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">Baileys Multi-Device (Latest)</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
-                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Primary Test Script</td>
-                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right; color: #38bdf8;">messageHandler.js (RSUD Ranap & Rajal)</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
-                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Persistent Storage</td>
-                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">Upstash Redis Cloud + Local Session</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
-                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Socket.IO Version</td>
-                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">v4.7.4 (Websocket + Polling)</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
-                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Active Backend URL</td>
-                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right; word-break: break-all;" id="infoBackendUrl"></td>
-                        </tr>
-                    </table>
+                    <div class="table-responsive">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 450px;">
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Gateway Engine</td>
+                                <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">Baileys Multi-Device (Latest)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Primary Test Script</td>
+                                <td style="padding: 0.75rem 0; font-weight: 700; text-align: right; color: #38bdf8;">messageHandler.js (RSUD Ranap & Rajal)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Persistent Storage</td>
+                                <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">Upstash Redis Cloud + Local Session</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Socket.IO Version</td>
+                                <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">v4.7.4 (Websocket + Polling)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Active Backend URL</td>
+                                <td style="padding: 0.75rem 0; font-weight: 700; text-align: right; word-break: break-all;" id="infoBackendUrl"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -1160,6 +435,32 @@
             </div>
         </div>
     </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. MOBILE BOTTOM NAVIGATION BAR (MOBILE ONLY <= 768px)                    -->
+    <!-- ========================================================================= -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <a class="bottom-nav-item active" data-view="viewListBot">
+            <i class="bi bi-robot"></i>
+            <span>List Bot</span>
+        </a>
+        <a class="bottom-nav-item" data-view="viewConnect">
+            <i class="bi bi-qr-code-scan"></i>
+            <span>Kendali</span>
+        </a>
+        <a class="bottom-nav-item" data-view="viewGateway">
+            <i class="bi bi-send-check"></i>
+            <span>Gateway</span>
+        </a>
+        <a class="bottom-nav-item" data-view="viewScripts">
+            <i class="bi bi-file-earmark-code"></i>
+            <span>Scripts</span>
+        </a>
+        <a class="bottom-nav-item" data-view="viewTerminal">
+            <i class="bi bi-terminal-fill"></i>
+            <span>Logs</span>
+        </a>
+    </nav>
 
     <!-- ========================================================================= -->
     <!-- 4. CORE JAVASCRIPT & SOCKET LOGIC                                         -->
@@ -1266,15 +567,63 @@
             updateThemeUI();
         });
 
-        // NAVIGATION SWITCHER
-        document.querySelectorAll('.dock-item').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
-                item.classList.add('active');
+        // NAVIGATION SWITCHER & RESPONSIVE DRAWER SYNC
+        const sidebarDock = document.getElementById('sidebarDock');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
+        function openMobileSidebar() {
+            if (sidebarDock) sidebarDock.classList.add('mobile-open');
+            if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar() {
+            if (sidebarDock) sidebarDock.classList.remove('mobile-open');
+            if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (mobileNavToggle) mobileNavToggle.addEventListener('click', openMobileSidebar);
+        if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeMobileSidebar);
+        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+
+        function switchView(targetViewId) {
+            // Update desktop dock items
+            document.querySelectorAll('.dock-item').forEach(d => {
+                if (d.getAttribute('data-view') === targetViewId) {
+                    d.classList.add('active');
+                } else {
+                    d.classList.remove('active');
+                }
+            });
+
+            // Update mobile bottom nav items
+            document.querySelectorAll('.bottom-nav-item').forEach(b => {
+                if (b.getAttribute('data-view') === targetViewId) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+
+            // Show active section
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            const targetSection = document.getElementById(targetViewId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Close mobile sidebar if open
+            closeMobileSidebar();
+        }
+
+        document.querySelectorAll('.dock-item, .bottom-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
                 const targetViewId = item.getAttribute('data-view');
-                document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-                document.getElementById(targetViewId).classList.add('active');
+                if (targetViewId) switchView(targetViewId);
             });
         });
 
@@ -1485,37 +834,60 @@
                 
                 return `
                     <div class="bot-row">
-                        <!-- MAIN INFO -->
-                        <div class="bot-main-info">
-                            <div class="bot-avatar-wrap">
-                                <div class="bot-avatar">
-                                    <i class="bi bi-robot"></i>
+                        <!-- TIER 1: CARD HEADER (IDENTITY + ACTIONS) -->
+                        <div class="bot-card-header">
+                            <div class="bot-main-info">
+                                <div class="bot-avatar-wrap">
+                                    <div class="bot-avatar">
+                                        <i class="bi bi-robot"></i>
+                                    </div>
+                                    <span class="bot-status-dot ${statusDotClass}" title="Status: ${b.status}"></span>
                                 </div>
-                                <span class="bot-status-dot ${statusDotClass}" title="Status: ${b.status}"></span>
+                                <div class="bot-identity">
+                                    <div class="bot-name-line">
+                                        <h5 class="bot-name mb-0">${b.id}</h5>
+                                        <span class="plan-badge-plain">
+                                            <i class="bi bi-lightning-charge-fill text-primary"></i>
+                                            <span class="dents-shiny-text">PRO</span>
+                                        </span>
+                                    </div>
+                                    <p class="bot-profile-name mb-0">
+                                        <i class="bi bi-whatsapp"></i> ${phoneDisplay}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="bot-identity">
-                                <div class="bot-name-line">
-                                    <h5 class="bot-name mb-0">${b.id}</h5>
-                                    <span class="plan-badge-plain">
-                                        <i class="bi bi-lightning-charge-fill text-primary"></i>
-                                        <span class="dents-shiny-text">PRO</span>
-                                    </span>
-                                </div>
-                                <p class="bot-profile-name mb-0">
-                                    <i class="bi bi-whatsapp"></i> ${phoneDisplay}
-                                </p>
+
+                            <!-- ACTIONS -->
+                            <div class="bot-action-buttons">
+                                <button class="btn-action-sm" onclick="openConnectForBot('${b.id}', '${b.script || 'messageHandler.js'}')" title="Buka QR / Pairing">
+                                    <i class="bi bi-qr-code"></i> Connect
+                                </button>
+                                <button class="btn-action-sm btn-reload-highlight" onclick="triggerReloadBotScript('${b.id}')" title="⚡ Hot Reload Script (Tanpa Putus Koneksi)">
+                                    <i class="bi bi-lightning-charge-fill"></i> Reload SC
+                                </button>
+                                <button class="btn-action-sm" onclick="triggerRestartBot('${b.id}')" title="Restart Bot">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                                <button class="btn-action-sm" onclick="openGatewayForBot('${b.id}')" title="Kirim Pesan Uji">
+                                    <i class="bi bi-chat-dots"></i>
+                                </button>
+                                <button class="btn-action-sm btn-danger-hover" onclick="triggerDeleteBot('${b.id}')" title="Logout & Hapus Permanen">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- 4-BOX METRIC GRID PERSIS DENTS WEB BOT -->
+                        <!-- TIER 2: FULL-WIDTH STATS BAR (ZERO TRUNCATION) -->
                         <div class="desktop-stats-grid">
                             <div class="stat-card-box">
                                 <div class="stat-card-label">SCRIPT</div>
-                                <div class="stat-card-val text-primary" title="${b.script}">${b.script || 'messageHandler.js'}</div>
+                                <div class="stat-card-val text-primary" title="${b.script}">
+                                    <i class="bi bi-filetype-js"></i> ${b.script || 'messageHandler.js'}
+                                </div>
                             </div>
                             <div class="stat-card-box">
                                 <div class="stat-card-label">NO. WHATSAPP</div>
-                                <div class="stat-card-val">${b.phoneNumber || '-'}</div>
+                                <div class="stat-card-val">${phoneDisplay}</div>
                             </div>
                             <div class="stat-card-box">
                                 <div class="stat-card-label">UPTIME</div>
@@ -1523,27 +895,10 @@
                             </div>
                             <div class="stat-card-box">
                                 <div class="stat-card-label">STATUS</div>
-                                <div class="stat-card-val" style="color: ${isOnline ? '#22c55e' : '#f59e0b'}; text-transform: uppercase;">${b.status}</div>
+                                <div class="stat-card-val" style="color: ${isOnline ? '#22c55e' : '#f59e0b'}; text-transform: uppercase;">
+                                    <span class="status-inline-dot" style="background: ${isOnline ? '#22c55e' : '#f59e0b'};"></span> ${b.status}
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- ACTIONS -->
-                        <div class="bot-action-buttons">
-                            <button class="btn-action-sm" onclick="openConnectForBot('${b.id}', '${b.script || 'messageHandler.js'}')" title="Buka QR / Pairing">
-                                <i class="bi bi-qr-code"></i> Connect
-                            </button>
-                            <button class="btn-action-sm" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);" onclick="triggerReloadBotScript('${b.id}')" title="⚡ Hot Reload Script (Tanpa Putus Koneksi)">
-                                <i class="bi bi-lightning-charge-fill"></i> Reload SC
-                            </button>
-                            <button class="btn-action-sm" onclick="triggerRestartBot('${b.id}')" title="Restart Bot">
-                                <i class="bi bi-arrow-clockwise"></i>
-                            </button>
-                            <button class="btn-action-sm" onclick="openGatewayForBot('${b.id}')" title="Kirim Pesan Uji">
-                                <i class="bi bi-chat-dots"></i>
-                            </button>
-                            <button class="btn-action-sm btn-danger-hover" onclick="triggerDeleteBot('${b.id}')" title="Logout & Hapus Permanen">
-                                <i class="bi bi-trash"></i>
-                            </button>
                         </div>
                     </div>
                 `;
@@ -1702,35 +1057,37 @@
         function renderScriptsTable() {
             const c = document.getElementById('scriptsTableContainer');
             c.innerHTML = `
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--dark-border-solid); text-align: left; color: var(--dark-secondary-text-color);">
-                            <th style="padding: 0.75rem;">Nama File Script</th>
-                            <th style="padding: 0.75rem;">Status / Role</th>
-                            <th style="padding: 0.75rem; text-align: right;">Aksi Cepat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${appState.scripts.map(s => `
-                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
-                                <td style="padding: 0.75rem; font-family: monospace; font-weight: 600;">
-                                    <i class="bi bi-filetype-js text-warning"></i> ${s}
-                                </td>
-                                <td style="padding: 0.75rem;">
-                                    ${s === 'messageHandler.js' ? '<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">PRIMARY TEST ENGINE</span>' : '<span style="color: var(--dark-secondary-text-color); font-size: 0.8rem;">Modul Tambahan</span>'}
-                                </td>
-                                <td style="padding: 0.75rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <button class="btn-action-sm" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);" onclick="triggerReloadAllUsingScript('${s}')" title="Hot Reload ke semua bot yang menggunakan script ini">
-                                        <i class="bi bi-lightning-charge-fill"></i> Reload ke Bot
-                                    </button>
-                                    <button class="btn-action-sm" onclick="selectScriptForNewBot('${s}')">
-                                        <i class="bi bi-play-fill"></i> Gunakan Script
-                                    </button>
-                                </td>
+                <div class="table-responsive">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 520px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid); text-align: left; color: var(--dark-secondary-text-color);">
+                                <th style="padding: 0.75rem;">Nama File Script</th>
+                                <th style="padding: 0.75rem;">Status / Role</th>
+                                <th style="padding: 0.75rem; text-align: right;">Aksi Cepat</th>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            ${appState.scripts.map(s => `
+                                <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                    <td style="padding: 0.75rem; font-family: monospace; font-weight: 600;">
+                                        <i class="bi bi-filetype-js text-warning"></i> ${s}
+                                    </td>
+                                    <td style="padding: 0.75rem;">
+                                        ${s === 'messageHandler.js' ? '<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">PRIMARY TEST ENGINE</span>' : '<span style="color: var(--dark-secondary-text-color); font-size: 0.8rem;">Modul Tambahan</span>'}
+                                    </td>
+                                    <td style="padding: 0.75rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                        <button class="btn-action-sm" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);" onclick="triggerReloadAllUsingScript('${s}')" title="Hot Reload ke semua bot yang menggunakan script ini">
+                                            <i class="bi bi-lightning-charge-fill"></i> Reload ke Bot
+                                        </button>
+                                        <button class="btn-action-sm" onclick="selectScriptForNewBot('${s}')">
+                                            <i class="bi bi-play-fill"></i> Gunakan Script
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
             `;
         }
 
