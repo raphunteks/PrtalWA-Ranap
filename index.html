@@ -1,17 +1,26 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="blue-cyan">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dents Web BOT - Ranap Bot WhatsApp Gateway API Manager</title>
+    <title>Dents Web BOT - Dents Web WhatsApp Gateway Manager</title>
     <meta name="description" content="Dashboard Multi-Device Enterprise bergaya Dents Web BOT untuk mengelola Bot WhatsApp Gateway secara real-time. Dilengkapi fitur Scan QR, Pairing Code, Gateway API Tester, dan Live Logs.">
-    <meta name="theme-color" content="#0b0b0c">
+    <meta name="theme-color" content="#071018">
 
     <!-- Open Graph / WhatsApp / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Dents Web BOT - Ranap Bot WhatsApp Gateway API">
+    <meta property="og:url" content="https://dentsweb-portal.vercel.app/">
+    <meta property="og:title" content="Dents Web BOT - Dents Web WhatsApp Gateway API">
     <meta property="og:description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
-    <meta property="og:image" content="./axalogo.png?v=2">
+    <meta property="og:image" content="https://dentsweb-portal.vercel.app/axalogo.png">
+
+    <!-- Immediate Theme Restorer (Anti-Flicker) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('dents_theme') || 'blue-cyan';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="./axalogo.png?v=2">
@@ -30,37 +39,37 @@
         /* ========================================================================= */
         /* DENTS WEB BOT OFFICIAL DESIGN SYSTEM & CSS VARIABLES                      */
         /* ========================================================================= */
-        :root[data-theme="dark"] {
-            --dark-bg: #0b0b0c;
-            --dark-card-bg: #111214;
-            --dark-secondary-bg: #16181d;
-            --dark-text-color: #ffffff;
-            --dark-secondary-text-color: #a1a1aa;
-            --dark-primary-accent: #3b82f6;
-            --dark-accent-hover: #2563eb;
-            --dark-border-color: hsla(0, 0%, 100%, 0.07);
-            --dark-border-solid: #2a2a30;
-            --glass-card: rgba(17, 18, 20, 0.85);
-            --badge-bg: rgba(255, 255, 255, 0.05);
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            --header-bg: rgba(11, 11, 12, 0.88);
-            --sidebar-bg: #111214;
+        :root, :root[data-theme="blue-cyan"], :root[data-theme="dark"] {
+            --dark-bg: #071018;
+            --dark-card-bg: #0d1a26;
+            --dark-secondary-bg: #122334;
+            --dark-text-color: #f0fdfa;
+            --dark-secondary-text-color: #94a3b8;
+            --dark-primary-accent: #06b6d4;
+            --dark-accent-hover: #0891b2;
+            --dark-border-color: rgba(6, 182, 212, 0.12);
+            --dark-border-solid: #1e3a52;
+            --glass-card: rgba(13, 26, 38, 0.88);
+            --badge-bg: rgba(6, 182, 212, 0.08);
+            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --header-bg: rgba(7, 16, 24, 0.92);
+            --sidebar-bg: #0d1a26;
         }
 
         :root[data-theme="light"] {
-            --dark-bg: #f0f2f5;
+            --dark-bg: #f0f9ff;
             --dark-card-bg: #ffffff;
             --dark-secondary-bg: #f8fafc;
             --dark-text-color: #0f172a;
-            --dark-secondary-text-color: #64748b;
-            --dark-primary-accent: #2563eb;
-            --dark-accent-hover: #1d4ed8;
-            --dark-border-color: rgba(0, 0, 0, 0.08);
+            --dark-secondary-text-color: #475569;
+            --dark-primary-accent: #0284c7;
+            --dark-accent-hover: #0369a1;
+            --dark-border-color: rgba(2, 132, 199, 0.12);
             --dark-border-solid: #e2e8f0;
             --glass-card: rgba(255, 255, 255, 0.95);
-            --badge-bg: rgba(0, 0, 0, 0.04);
-            --accent-gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-            --header-bg: rgba(240, 242, 245, 0.92);
+            --badge-bg: rgba(2, 132, 199, 0.06);
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            --header-bg: rgba(240, 249, 255, 0.92);
             --sidebar-bg: #ffffff;
         }
 
@@ -784,7 +793,7 @@
             <img src="./axalogo.png?v=2" alt="Dents Web BOT Logo" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png';">
             <div class="brand-text-group">
                 <h1>Dents Web BOT</h1>
-                <p>Ranap Bot WhatsApp Gateway Manager</p>
+                <p>Dents Web WhatsApp Gateway Manager</p>
             </div>
         </a>
 
@@ -1233,19 +1242,27 @@
             if (isSoundEnabled) playSound('beep');
         });
 
-        // THEME TOGGLE
+        // THEME TOGGLE (BLUE CYAN SOFT [DEFAULT] & LIGHT)
         const themeBtn = document.getElementById('themeToggleBtn');
         const themeIcon = document.getElementById('themeIcon');
         function updateThemeUI() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            themeIcon.className = currentTheme === 'dark' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'blue-cyan';
+            if (currentTheme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill text-warning';
+                themeBtn.title = 'Ganti ke Tema Blue Cyan Soft';
+            } else {
+                themeIcon.className = 'bi bi-moon-stars-fill text-info';
+                themeBtn.title = 'Ganti ke Tema Light';
+            }
         }
         updateThemeUI();
 
         themeBtn.addEventListener('click', () => {
             const html = document.documentElement;
-            const nextTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            const currentTheme = html.getAttribute('data-theme') || 'blue-cyan';
+            const nextTheme = currentTheme === 'light' ? 'blue-cyan' : 'light';
             html.setAttribute('data-theme', nextTheme);
+            localStorage.setItem('dents_theme', nextTheme);
             updateThemeUI();
         });
 
