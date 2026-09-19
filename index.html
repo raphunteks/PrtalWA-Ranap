@@ -3,514 +3,1765 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ========================================== -->
-    <!-- 1. SEO & LINK PREVIEW (OPEN GRAPH) -->
-    <!-- ========================================== -->
-    <title>Portal - Ranap Bot Manager</title>
-    <meta name="title" content="Portal - Ranap Bot Manager">
-    <meta name="description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
-    <meta name="theme-color" content="#0f172a">
+    <title>Dents Web BOT - Ranap Bot WhatsApp Gateway API Manager</title>
+    <meta name="description" content="Dashboard Multi-Device Enterprise bergaya Dents Web BOT untuk mengelola Bot WhatsApp Gateway secara real-time. Dilengkapi fitur Scan QR, Pairing Code, Gateway API Tester, dan Live Logs.">
+    <meta name="theme-color" content="#0b0b0c">
 
     <!-- Open Graph / WhatsApp / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Portal - Ranap Bot Manager">
+    <meta property="og:title" content="Dents Web BOT - Ranap Bot WhatsApp Gateway API">
     <meta property="og:description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
-    <!-- Menggunakan parameter v=2 agar cache gambar lama di sosmed ter-refresh otomatis -->
-    <meta property="og:image" itemprop="image" content="./axalogo.png?v=2">
-    <meta property="og:image:secure_url" content="./axalogo.png?v=2">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:alt" content="Logo Ranap Bot">
+    <meta property="og:image" content="./axalogo.png?v=2">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Portal - Ranap Bot Manager">
-    <meta property="twitter:description" content="Dashboard Multi-Device pintar untuk mengelola Bot WhatsApp secara real-time. Dilengkapi fitur Scan QR, Pairing Code, dan Live Logs.">
-    <meta property="twitter:image" content="./axalogo.png?v=2">
-
-    <!-- ========================================== -->
-    <!-- 2. FAVICON FIXED (DIPERBAIKI) -->
-    <!-- ========================================== -->
-    <!-- Penambahan ?v=2 dan apple-touch-icon untuk mengatasi bug cache browser/github -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="./axalogo.png?v=2">
-    <link rel="icon" type="image/png" sizes="16x16" href="./axalogo.png?v=2">
-    <link rel="shortcut icon" href="./axalogo.png?v=2" type="image/x-icon">
     <link rel="apple-touch-icon" href="./axalogo.png?v=2">
 
-    <!-- ========================================== -->
-    <!-- CORE SCRIPTS & STYLES -->
-    <!-- ========================================== -->
+    <!-- Fonts & Icons Resmi Dents Web BOT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Socket.IO Client -->
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+
     <style>
+        /* ========================================================================= */
+        /* DENTS WEB BOT OFFICIAL DESIGN SYSTEM & CSS VARIABLES                      */
+        /* ========================================================================= */
         :root[data-theme="dark"] {
-            --bg-color: #0f172a; --text-primary: #f8fafc; --text-secondary: #94a3b8;
-            --glass-bg: rgba(30, 41, 59, 0.6); --glass-border: rgba(255, 255, 255, 0.1);
-            --card-bg: rgba(15, 23, 42, 0.6);
-            --accent: #3b82f6; --accent-hover: #2563eb;
+            --dark-bg: #0b0b0c;
+            --dark-card-bg: #111214;
+            --dark-secondary-bg: #16181d;
+            --dark-text-color: #ffffff;
+            --dark-secondary-text-color: #a1a1aa;
+            --dark-primary-accent: #3b82f6;
+            --dark-accent-hover: #2563eb;
+            --dark-border-color: hsla(0, 0%, 100%, 0.07);
+            --dark-border-solid: #2a2a30;
+            --glass-card: rgba(17, 18, 20, 0.85);
+            --badge-bg: rgba(255, 255, 255, 0.05);
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --header-bg: rgba(11, 11, 12, 0.88);
+            --sidebar-bg: #111214;
         }
+
         :root[data-theme="light"] {
-            --bg-color: #f1f5f9; --text-primary: #0f172a; --text-secondary: #475569;
-            --glass-bg: rgba(255, 255, 255, 0.7); --glass-border: rgba(255, 255, 255, 0.4);
-            --card-bg: rgba(255, 255, 255, 0.6);
-            --accent: #3b82f6; --accent-hover: #2563eb;
+            --dark-bg: #f0f2f5;
+            --dark-card-bg: #ffffff;
+            --dark-secondary-bg: #f8fafc;
+            --dark-text-color: #0f172a;
+            --dark-secondary-text-color: #64748b;
+            --dark-primary-accent: #2563eb;
+            --dark-accent-hover: #1d4ed8;
+            --dark-border-color: rgba(0, 0, 0, 0.08);
+            --dark-border-solid: #e2e8f0;
+            --glass-card: rgba(255, 255, 255, 0.95);
+            --badge-bg: rgba(0, 0, 0, 0.04);
+            --accent-gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --header-bg: rgba(240, 242, 245, 0.92);
+            --sidebar-bg: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        body { background-color: var(--bg-color); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
-        
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 24px; width: 100%; max-width: 700px; padding: 2.5rem 2rem; position: relative; overflow: hidden; height: fit-content; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .title-wrapper { display: flex; align-items: center; gap: 1rem; }
-        .app-logo { width: 48px; height: 48px; object-fit: contain; border-radius: 12px; background: rgba(255, 255, 255, 0.05); padding: 4px; border: 1px solid var(--glass-border); }
-        .title-group h1 { font-size: 1.35rem; font-weight: 700; }
-        .title-group p { color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.25rem; }
-        .theme-toggle { background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 1.5rem; padding: 0.5rem; border-radius: 50%; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', 'Inter', sans-serif;
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
 
-        .tabs { display: flex; background: rgba(0, 0, 0, 0.1); border-radius: 12px; padding: 0.25rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.25rem; }
-        .tab-btn { flex: 1; padding: 0.75rem; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem; cursor: pointer; border-radius: 8px; transition: all 0.3s; white-space: nowrap; }
-        .tab-btn.active { background: var(--bg-color); color: var(--text-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .tab-content { display: none; animation: fadeIn 0.4s ease-out forwards; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body {
+            background-color: var(--dark-bg);
+            color: var(--dark-text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-        /* FORM STYLES */
-        .input-group { margin-bottom: 1rem; }
-        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; }
-        .form-control { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.05); color: var(--text-primary); font-size: 0.95rem; outline: none; }
-        .form-control:focus { border-color: var(--accent); }
-        
-        .btn-primary { background: var(--accent); color: #fff; border: none; padding: 0.85rem 1.5rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-danger:hover { background: #ef4444; color: #fff; }
-        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 6px; cursor: pointer; }
-        .btn-sm:hover { background: var(--accent); border-color: var(--accent); color: white; }
+        /* SCROLLBAR CUSTOM */
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-        /* BOTS LIST */
-        .bot-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
-        .bot-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem; }
-        .bot-title { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
-        .status-badge { font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
-        .status-badge.connected { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-        .status-badge.disconnected { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-        .status-badge.connecting, .status-badge.qr { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-        .bot-info { font-size: 0.85rem; color: var(--text-secondary); display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-        .bot-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
+        /* ========================================================================= */
+        /* TOP NAVBAR SHELL                                                          */
+        /* ========================================================================= */
+        .navbar-shell {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--header-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--dark-border-solid);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        /* QR AREA */
-        .qr-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem 0; }
-        .qr-box { width: 240px; height: 240px; background: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; padding: 1rem; position: relative; }
-        .qr-box img { width: 100%; height: 100%; object-fit: contain; }
-        .code-display { font-size: 2.5rem; font-weight: 800; letter-spacing: 0.25em; text-align: center; margin-top: 1rem; color: var(--accent); background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px; }
+        .navbar-brand-slot {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            color: inherit;
+        }
 
-        .active-bot-notice { text-align: center; font-size: 0.9rem; color: #fbbf24; background: rgba(245, 158, 11, 0.1); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600; }
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+            border: 1px solid var(--dark-border-solid);
+        }
 
-        .loader { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 10; opacity: 0; pointer-events: none; transition: 0.3s; border-radius: 24px; }
-        .loader.active { opacity: 1; pointer-events: all; }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--text-secondary); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        .brand-text-group h1 {
+            font-family: 'Fugaz One', 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            letter-spacing: 0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .brand-text-group p {
+            font-size: 0.75rem;
+            color: var(--dark-secondary-text-color);
+            font-weight: 500;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .server-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background: var(--dark-secondary-bg);
+            border: 1px solid var(--dark-border-solid);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .server-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+        }
+        .server-status-dot.online {
+            background-color: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+        }
+
+        .nav-tool-btn {
+            background: var(--dark-secondary-bg);
+            border: 1px solid var(--dark-border-solid);
+            color: var(--dark-text-color);
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+        .nav-tool-btn:hover {
+            border-color: var(--dark-primary-accent);
+            color: var(--dark-primary-accent);
+            transform: translateY(-1px);
+        }
+
+        /* ========================================================================= */
+        /* MAIN LAYOUT WITH SIDEBAR DOCK                                             */
+        /* ========================================================================= */
+        .app-container {
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - 65px);
+        }
+
+        .sidebar-dock {
+            width: 250px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--dark-border-solid);
+            padding: 1.25rem 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-heading {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--dark-secondary-text-color);
+            padding: 0.6rem 0.75rem 0.3rem;
+        }
+
+        .dock-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            color: var(--dark-secondary-text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .dock-item i { font-size: 1.15rem; }
+        .dock-item:hover {
+            background: var(--dark-secondary-bg);
+            color: var(--dark-text-color);
+            border-color: var(--dark-border-color);
+        }
+        .dock-item.active {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+        }
+
+        .main-stage {
+            flex: 1;
+            padding: 1.75rem;
+            max-width: 1350px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ========================================================================= */
+        /* DENTS WEB BOT SHINY TEXT & STATUS BADGES                                  */
+        /* ========================================================================= */
+        .dents-shiny-text {
+            background-image: linear-gradient(120deg, #38bdf8 0%, #38bdf8 35%, #ffffff 50%, #38bdf8 65%, #38bdf8 100%);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: dents-shine 2.8s linear infinite;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        @keyframes dents-shine {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .bot-status-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid var(--dark-card-bg);
+        }
+        .bot-status-dot.is-online {
+            background-color: #22c55e;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+        .bot-status-dot.is-offline { background-color: #94a3b8; }
+        .bot-status-dot.is-connecting { background-color: #f59e0b; animation: pulse-yellow 2s infinite; }
+        .bot-status-dot.is-qr { background-color: #3b82f6; }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { box-shadow: 0 0 0 7px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        /* ========================================================================= */
+        /* SUMMARY METRICS CARDS                                                     */
+        /* ========================================================================= */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .metric-card {
+            background: var(--dark-card-bg);
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 14px;
+            padding: 1.25rem 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--dark-primary-accent);
+        }
+
+        .metric-info h4 {
+            font-size: 0.8rem;
+            color: var(--dark-secondary-text-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.35rem;
+        }
+        .metric-info .val {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: var(--dark-text-color);
+            line-height: 1;
+        }
+
+        .metric-icon-wrap {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: var(--dark-secondary-bg);
+            border: 1px solid var(--dark-border-solid);
+        }
+
+        /* ========================================================================= */
+        /* TOOLBAR FILTER & SEARCH (DENTS WEB BOT LIST BOT TOOLBAR)                  */
+        /* ========================================================================= */
+        .toolbar-filter-col {
+            background: var(--dark-card-bg);
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 12px;
+            padding: 0.65rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            background: var(--dark-secondary-bg);
+            padding: 0.25rem;
+            border-radius: 8px;
+            gap: 0.25rem;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--dark-secondary-text-color);
+            padding: 0.45rem 0.95rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active {
+            background: var(--dark-card-bg);
+            color: var(--dark-text-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-badge {
+            font-size: 0.72rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-box-wrap {
+            position: relative;
+            min-width: 260px;
+        }
+        .search-box-wrap i {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-secondary-text-color);
+            font-size: 0.9rem;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 0.85rem 0.5rem 2.3rem;
+            border-radius: 8px;
+            border: 1px solid var(--dark-border-solid);
+            background: var(--dark-secondary-bg);
+            color: var(--dark-text-color);
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .search-input:focus { border-color: var(--dark-primary-accent); }
+
+        /* ========================================================================= */
+        /* DENTS WEB BOT CARDS (EXACT BOT-ROW & DESKTOP-STATS-GRID)                  */
+        /* ========================================================================= */
+        .bot-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .bot-row {
+            background: var(--dark-card-bg);
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 14px;
+            padding: 1.15rem 1.35rem;
+            display: grid;
+            grid-template-columns: minmax(260px, 1.2fr) minmax(360px, 2fr) auto;
+            align-items: center;
+            gap: 1.25rem;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+        .bot-row:hover {
+            border-color: var(--dark-primary-accent);
+            transform: translateY(-2px);
+        }
+
+        .bot-main-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bot-avatar-wrap {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        .bot-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            background: var(--dark-secondary-bg);
+            border: 1px solid var(--dark-border-solid);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--dark-primary-accent);
+        }
+
+        .bot-identity {
+            min-width: 0;
+        }
+
+        .bot-name-line {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .bot-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--dark-text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .plan-badge-plain {
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            background: var(--badge-bg);
+            border: 1px solid var(--dark-border-solid);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .bot-profile-name {
+            font-size: 0.8rem;
+            color: var(--dark-secondary-text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* 4-BOX METRIC GRID PERSIS DENTS WEB BOT */
+        .desktop-stats-grid {
+            background: var(--dark-secondary-bg);
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            overflow: hidden;
+        }
+
+        .stat-card-box {
+            border-right: 1px solid var(--dark-border-solid);
+            padding: 0.55rem 0.5rem;
+            text-align: center;
+        }
+        .stat-card-box:last-child { border-right: none; }
+
+        .stat-card-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--dark-secondary-text-color);
+            letter-spacing: 0.5px;
+            margin-bottom: 0.2rem;
+        }
+        .stat-card-val {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--dark-text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bot-action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action-sm {
+            padding: 0.5rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--dark-border-solid);
+            background: var(--dark-secondary-bg);
+            color: var(--dark-text-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s ease;
+        }
+        .btn-action-sm:hover {
+            border-color: var(--dark-primary-accent);
+            color: var(--dark-primary-accent);
+        }
+        .btn-action-sm.btn-danger-hover:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        /* ========================================================================= */
+        /* RUANG KENDALI (CONNECT & PAIRING VIEW)                                     */
+        /* ========================================================================= */
+        .ruang-kendali-header {
+            margin-bottom: 1.75rem;
+            border-bottom: 1px solid var(--dark-border-solid);
+            padding-bottom: 1rem;
+        }
+        .ruang-kendali-header h2 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .ruang-kendali-header p {
+            color: var(--dark-secondary-text-color);
+            font-size: 0.88rem;
+            margin-top: 0.35rem;
+        }
+
+        .connect-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 900px) {
+            .connect-grid { grid-template-columns: 1fr; }
+            .bot-row { grid-template-columns: 1fr; }
+        }
+
+        .content-card {
+            background: var(--dark-card-bg);
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.15rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--dark-secondary-text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.45rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--dark-border-solid);
+            background: var(--dark-secondary-bg);
+            color: var(--dark-text-color);
+            font-size: 0.92rem;
+            outline: none;
+        }
+        .form-control:focus {
+            border-color: var(--dark-primary-accent);
+        }
+
+        .btn-primary-dents {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-primary-dents:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        /* STATUS KONEKSI PANEL */
+        .status-koneksi-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            min-height: 380px;
+            text-align: center;
+        }
+
+        .qr-display-frame {
+            width: 250px;
+            height: 250px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            margin-bottom: 1rem;
+        }
+        .qr-display-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .pairing-code-frame {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 0.25em;
+            color: var(--dark-primary-accent);
+            background: var(--dark-secondary-bg);
+            border: 2px dashed var(--dark-border-solid);
+            padding: 1.25rem 2rem;
+            border-radius: 14px;
+            margin: 1rem 0;
+            display: inline-block;
+            user-select: all;
+        }
+
+        /* ========================================================================= */
+        /* GATEWAY API TESTER & TERMINAL                                             */
+        /* ========================================================================= */
+        .terminal-window {
+            background: #06080c;
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 12px;
+            padding: 1.25rem;
+            height: 480px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .log-entry { line-height: 1.5; word-wrap: break-word; }
+        .log-time { color: #64748b; margin-right: 0.6rem; user-select: none; }
+        .log-info .log-msg { color: #10b981; }
+        .log-warn .log-msg { color: #f59e0b; }
+        .log-error .log-msg { color: #ef4444; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-card {
+            background: var(--dark-card-bg);
+            border: 1px solid var(--dark-border-solid);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--dark-primary-accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* UPLOAD AREA */
-        .upload-area { background: rgba(0,0,0,0.1); border: 1px dashed var(--glass-border); border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1.5rem; }
-        
-        /* TERMINAL LOGS AREA */
-        .terminal-window {
-            background: #0f172a; border: 1px solid var(--glass-border); border-radius: 12px;
-            padding: 1rem; height: 400px; overflow-y: auto;
-            font-family: 'Consolas', 'Courier New', monospace; font-size: 0.8rem;
-            color: #e2e8f0; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; gap: 0.3rem;
-        }
-        .terminal-window::-webkit-scrollbar { width: 8px; }
-        .terminal-window::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        .log-entry { line-height: 1.4; word-wrap: break-word; }
-        .log-time { color: #64748b; margin-right: 0.5rem; user-select: none; }
-        .log-error .log-msg { color: #ef4444; }
-        .log-warn .log-msg { color: #f59e0b; }
-        .log-info .log-msg { color: #10b981; }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="glass-panel">
-        <div class="loader" id="loader"><div class="spinner"></div></div>
-
-        <div class="header">
-            <div class="title-wrapper">
-                <img src="./axalogo.png?v=2" alt="App Logo" class="app-logo" onerror="this.style.display='none';">
-                <div class="title-group">
-                    <h1>Portal - Ranap Bot</h1>
-                    <p>Multi-Device Manager</p>
-                </div>
+    <!-- ========================================================================= -->
+    <!-- 1. TOP NAVBAR SHELL PERSIS DENTS WEB BOT                                  -->
+    <!-- ========================================================================= -->
+    <header class="navbar-shell" id="mainNavbar">
+        <a href="#" class="navbar-brand-slot">
+            <img src="./axalogo.png?v=2" alt="Dents Web BOT Logo" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png';">
+            <div class="brand-text-group">
+                <h1>Dents Web BOT</h1>
+                <p>Ranap Bot WhatsApp Gateway Manager</p>
             </div>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
-        </div>
+        </a>
 
-        <div class="tabs">
-            <button class="tab-btn active" data-target="settingsTab">⚙️ Settings</button>
-            <button class="tab-btn" data-target="qrTab">📱 Scan QR</button>
-            <button class="tab-btn" data-target="pairingTab">🔗 Pairing</button>
-            <button class="tab-btn" data-target="logsTab">📟 Live Logs</button>
-        </div>
-
-        <!-- TAB SETTINGS BOT -->
-        <div id="settingsTab" class="tab-content active">
-            <div class="upload-area">
-                <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; display: block; margin-bottom: 0.5rem;">📥 Upload Script Handler Baru (.js)</label>
-                <input type="file" id="scriptUpload" accept=".js" style="font-size: 0.85rem;">
-                <button class="btn-sm" id="btnUploadScript" style="margin-top: 0.5rem;">Upload ke Redis</button>
+        <div class="navbar-actions">
+            <div class="server-status-pill" id="serverStatusPill">
+                <span class="server-status-dot" id="serverStatusDot"></span>
+                <span id="serverStatusText">Connecting...</span>
             </div>
 
-            <div style="background: var(--card-bg); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 2rem;">
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">➕ Buat Instance Bot Baru</h3>
-                <div class="input-group">
-                    <label>Nama/ID Bot (Tanpa Spasi, contoh: BotRajal1)</label>
-                    <input type="text" id="newBotId" class="form-control" placeholder="Masukkan ID unik">
-                </div>
+            <button class="nav-tool-btn" id="soundToggleBtn" title="Aktifkan / Matikan Audio Efek Dents Web BOT">
+                <i class="bi bi-volume-up-fill" id="soundIcon"></i>
+                <span id="soundText">Aktifkan suara</span>
+            </button>
+
+            <button class="nav-tool-btn" id="themeToggleBtn" title="Ganti Tema">
+                <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+            </button>
+
+            <button class="nav-tool-btn" id="btnConfigModal" title="Pengaturan URL Backend">
+                <i class="bi bi-gear-fill"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MAIN LAYOUT (SIDEBAR DOCK + MAIN STAGE)                                -->
+    <!-- ========================================================================= -->
+    <div class="app-container">
+        
+        <!-- SIDEBAR DOCK -->
+        <aside class="sidebar-dock">
+            <div class="sidebar-heading">Menu Utama</div>
+            <a class="dock-item active" data-view="viewListBot">
+                <i class="bi bi-robot"></i>
+                <span>List Bot</span>
+            </a>
+            <a class="dock-item" data-view="viewConnect">
+                <i class="bi bi-qr-code-scan"></i>
+                <span>Ruang Kendali</span>
+            </a>
+            <a class="dock-item" data-view="viewGateway">
+                <i class="bi bi-send-check"></i>
+                <span>Gateway API</span>
+            </a>
+            <a class="dock-item" data-view="viewScripts">
+                <i class="bi bi-file-earmark-code"></i>
+                <span>Script Hub</span>
+            </a>
+
+            <div class="sidebar-heading" style="margin-top: 1rem;">Monitoring & Sistem</div>
+            <a class="dock-item" data-view="viewTerminal">
+                <i class="bi bi-terminal-fill"></i>
+                <span>Live Logs</span>
+            </a>
+            <a class="dock-item" data-view="viewCluster">
+                <i class="bi bi-cpu-fill"></i>
+                <span>Cluster Info</span>
+            </a>
+        </aside>
+
+        <!-- MAIN STAGE -->
+        <main class="main-stage">
+
+            <!-- ================================================================= -->
+            <!-- VIEW 1: LIST BOT (DENTS WEB BOT LISTBOT-PAGE)                     -->
+            <!-- ================================================================= -->
+            <section id="viewListBot" class="view-section active">
                 
-                <!-- INPUT SCRIPT MANUAL / DATALIST -->
-                <div class="input-group">
-                    <label>Pilih / Ketik Script Handler</label>
-                    <input type="text" id="newBotScript" list="scriptList" class="form-control" placeholder="Pilih dari daftar atau ketik manual..." value="messageHandler.js">
-                    <datalist id="scriptList">
-                        <option value="messageHandler.js">
-                    </datalist>
-                    <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.4rem; display: block;">*Bisa pilih dari daftar, atau ketik nama script secara manual jika file baru saja Anda upload ke GitHub (misal: messageHandlerV2.js).</small>
-                </div>
-
-                <button id="btnCreateBot" class="btn-primary">Generate QR / Siapkan Bot</button>
-            </div>
-
-            <h3 style="margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">📋 Daftar Bot Berjalan</h3>
-            <div id="botListContainer">
-                <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 2rem 0;">Belum ada bot yang berjalan.</p>
-            </div>
-        </div>
-
-        <!-- TAB SCAN QR -->
-        <div id="qrTab" class="tab-content">
-            <div class="active-bot-notice" id="qrNotice">Pilih bot dari menu Settings untuk melihat QR.</div>
-            <div class="qr-container" id="qrContainerWrapper" style="display: none;">
-                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center;">Tautkan WhatsApp ke: <strong id="qrBotNameLabel"></strong></p>
-                <div class="qr-box">
-                    <div class="spinner" id="qrSpinner"></div>
-                    <img id="qrImage" style="display: none;" alt="WhatsApp QR Code">
-                    <div id="connectedBadge" style="display: none; text-align: center; color: #22c55e; width: 100%;">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        <h3 style="margin-top: 0.5rem;">Tersambung</h3>
+                <!-- SUMMARY METRICS -->
+                <div class="summary-grid">
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Total Bot</h4>
+                            <div class="val" id="metricTotalBots">0</div>
+                        </div>
+                        <div class="metric-icon-wrap text-primary"><i class="bi bi-hdd-stack"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Bot Online</h4>
+                            <div class="val" style="color: #22c55e;" id="metricOnlineBots">0</div>
+                        </div>
+                        <div class="metric-icon-wrap" style="color: #22c55e;"><i class="bi bi-check-circle"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Bot Offline</h4>
+                            <div class="val" style="color: #94a3b8;" id="metricOfflineBots">0</div>
+                        </div>
+                        <div class="metric-icon-wrap" style="color: #94a3b8;"><i class="bi bi-x-circle"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Active Script</h4>
+                            <div class="val" style="font-size: 1.15rem;" id="metricActiveScript">messageHandler.js</div>
+                        </div>
+                        <div class="metric-icon-wrap text-warning"><i class="bi bi-code-slash"></i></div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- TAB PAIRING CODE -->
-        <div id="pairingTab" class="tab-content">
-            <div class="active-bot-notice" id="pairNotice">Pilih bot dari menu Settings untuk meminta Pairing Code.</div>
-            <div id="pairContainerWrapper" style="display: none;">
-                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center; margin-bottom: 1rem;">Minta kode untuk Bot: <strong id="pairBotNameLabel"></strong></p>
-                <div class="input-group">
-                    <label>Nomor WhatsApp Tujuan</label>
-                    <input type="text" id="phoneInput" class="form-control" placeholder="Misal: 6281234567890">
+                <!-- TOOLBAR FILTER -->
+                <div class="toolbar-filter-col">
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">Semua <span class="filter-badge" id="filterCountAll">0</span></button>
+                        <button class="filter-btn" data-filter="online">Online <span class="filter-badge" id="filterCountOnline">0</span></button>
+                        <button class="filter-btn" data-filter="offline">Offline <span class="filter-badge" id="filterCountOffline">0</span></button>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; align-items: center; flex: 1; justify-content: flex-end;">
+                        <div class="search-box-wrap">
+                            <i class="bi bi-search"></i>
+                            <input type="text" class="search-input" id="searchBotInput" placeholder="Cari ID Bot atau nomor WhatsApp...">
+                        </div>
+                        <button class="btn-action-sm" id="btnNavAddBot" style="background: var(--accent-gradient); color: #fff; border: none; padding: 0.55rem 1rem;">
+                            <i class="bi bi-plus-lg"></i> Tambah Bot
+                        </button>
+                    </div>
                 </div>
-                <button class="btn-primary" id="reqPairingBtn">Minta Pairing Code</button>
-                <div id="pairingCodeDisplay" class="code-display" style="display: none;"></div>
-            </div>
-        </div>
 
-        <!-- TAB LIVE LOGS TERMINAL -->
-        <div id="logsTab" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="font-size: 1.1rem; color: var(--text-primary);">📟 Output Railway</h3>
-                <button class="btn-sm" id="btnClearLogs">🗑️ Clear</button>
-            </div>
-            <div id="terminalWindow" class="terminal-window">
-                <!-- Logs will be appended here -->
-            </div>
-        </div>
+                <!-- BOT LIST CONTAINER -->
+                <div class="bot-list" id="botListContainer">
+                    <!-- Cards will be populated dynamically -->
+                </div>
+            </section>
 
+            <!-- ================================================================= -->
+            <!-- VIEW 2: RUANG KENDALI (CONNECT & PAIRING)                         -->
+            <!-- ================================================================= -->
+            <section id="viewConnect" class="view-section">
+                <div class="ruang-kendali-header">
+                    <h2><i class="bi bi-shield-lock-fill text-primary"></i> Ruang Kendali Dents Web BOT</h2>
+                    <p>Gerbang otentikasi utama. Hubungkan dan pantau seluruh aktivitas bot Anda dalam satu akses terpusat.</p>
+                </div>
+
+                <div class="connect-grid">
+                    <!-- LEFT COLUMN: FORM -->
+                    <div class="content-card">
+                        <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="bi bi-plus-circle-fill text-primary"></i> Siapkan Instance Bot Baru
+                        </h3>
+
+                        <div class="form-group">
+                            <label>Metode Koneksi WhatsApp</label>
+                            <div style="display: flex; gap: 0.75rem;">
+                                <label style="flex: 1; background: var(--dark-secondary-bg); border: 1px solid var(--dark-border-solid); padding: 0.75rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; text-transform: none; font-size: 0.88rem;">
+                                    <input type="radio" name="connectMethod" value="qr" checked>
+                                    <span>Scan QR Code</span>
+                                </label>
+                                <label style="flex: 1; background: var(--dark-secondary-bg); border: 1px solid var(--dark-border-solid); padding: 0.75rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; text-transform: none; font-size: 0.88rem;">
+                                    <input type="radio" name="connectMethod" value="pairing">
+                                    <span>Pairing Code (Tanpa Scan)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nama / ID Bot Unik</label>
+                            <input type="text" id="inputBotId" class="form-control" placeholder="Contoh: BotRanap1" value="BotRanap1">
+                            <small style="color: var(--dark-secondary-text-color); font-size: 0.72rem; margin-top: 0.3rem; display: block;">*Gunakan huruf dan angka tanpa spasi.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Script Handler (Primary Test: messageHandler.js)</label>
+                            <input type="text" id="inputBotScript" list="scriptDatalist" class="form-control" value="messageHandler.js">
+                            <datalist id="scriptDatalist">
+                                <option value="messageHandler.js">
+                            </datalist>
+                            <small style="color: #38bdf8; font-size: 0.75rem; margin-top: 0.3rem; display: block;">⚡ Uji coba engine Baileys difokuskan pada <strong>messageHandler.js</strong>.</small>
+                        </div>
+
+                        <div class="form-group" id="pairingPhoneGroup" style="display: none;">
+                            <label>Nomor WhatsApp Tujuan (Khusus Pairing)</label>
+                            <input type="text" id="inputPhoneNumber" class="form-control" placeholder="Misal: 6285256739684">
+                            <small style="color: var(--dark-secondary-text-color); font-size: 0.72rem; margin-top: 0.3rem; display: block;">*Awali dengan kode negara 62 (contoh: 62812...).</small>
+                        </div>
+
+                        <button id="btnGenerateConnect" class="btn-primary-dents">
+                            <i class="bi bi-lightning-charge-fill"></i> Mulai Sambungkan WhatsApp
+                        </button>
+                    </div>
+
+                    <!-- RIGHT COLUMN: STATUS KONEKSI PANEL -->
+                    <div class="content-card status-koneksi-box" id="connectDisplayBox">
+                        <div id="connectPlaceholder">
+                            <i class="bi bi-qr-code text-secondary" style="font-size: 4rem; opacity: 0.4;"></i>
+                            <h4 style="margin-top: 1rem; font-size: 1.1rem;">Status Koneksi</h4>
+                            <p style="color: var(--dark-secondary-text-color); font-size: 0.85rem; max-width: 320px; margin-top: 0.35rem;">
+                                Kode QR atau Kode Pasangan (Pairing Code) akan muncul di sini setelah Anda menekan tombol mulai.
+                            </p>
+                        </div>
+
+                        <!-- QR WRAPPER -->
+                        <div id="qrLiveWrapper" style="display: none; flex-direction: column; align-items: center;">
+                            <div class="qr-display-frame">
+                                <div class="spinner" id="qrLoadingSpinner" style="display: none;"></div>
+                                <img id="qrLiveImg" alt="WhatsApp QR Code" style="display: none;">
+                                <div id="qrConnectedCheck" style="display: none; text-align: center; color: #22c55e;">
+                                    <i class="bi bi-patch-check-fill" style="font-size: 4.5rem;"></i>
+                                    <h4 style="margin-top: 0.5rem;">Tersambung!</h4>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--dark-secondary-text-color);" id="qrTargetLabel"></div>
+                        </div>
+
+                        <!-- PAIRING CODE WRAPPER -->
+                        <div id="pairingLiveWrapper" style="display: none; flex-direction: column; align-items: center;">
+                            <p style="color: var(--dark-secondary-text-color); font-size: 0.85rem;">Masukkan 8 digit kode berikut pada WhatsApp di ponsel Anda:</p>
+                            <div class="pairing-code-frame" id="pairingCodeDisplay">---- - ----</div>
+                            <button class="btn-action-sm" id="btnCopyPairingCode" style="margin-top: 0.5rem;">
+                                <i class="bi bi-clipboard"></i> Salin Kode Pasangan
+                            </button>
+                            <div style="background: var(--dark-secondary-bg); border: 1px solid var(--dark-border-solid); border-radius: 10px; padding: 1rem; text-align: left; font-size: 0.8rem; margin-top: 1.25rem; color: var(--dark-secondary-text-color);">
+                                <strong style="color: var(--dark-text-color);">Cara Memasukkan Kode di Ponsel:</strong>
+                                <ol style="padding-left: 1.2rem; margin-top: 0.4rem;">
+                                    <li>Buka WhatsApp di ponsel Anda.</li>
+                                    <li>Ketuk <strong>Titik Tiga</strong> atau <strong>Pengaturan</strong> &gt; <strong>Perangkat Tertaut</strong>.</li>
+                                    <li>Ketuk <strong>Tautkan Perangkat</strong> &gt; <strong>Tautkan dengan nomor telepon saja</strong>.</li>
+                                    <li>Ketikkan kode 8 digit di atas.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- VIEW 3: GATEWAY API TESTER (FITUR RESMI DENTS WEB BOT GATEWAY)    -->
+            <!-- ================================================================= -->
+            <section id="viewGateway" class="view-section">
+                <div class="ruang-kendali-header">
+                    <h2><i class="bi bi-send-fill text-primary"></i> WhatsApp Gateway API Tester</h2>
+                    <p>Uji coba pengiriman pesan instan langsung dari Web Dashboard melalui bot WhatsApp yang aktif.</p>
+                </div>
+
+                <div class="content-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="form-group">
+                        <label>Pilih Bot Pengirim</label>
+                        <select id="gatewayBotSelect" class="form-control">
+                            <option value="">-- Tidak ada bot yang sedang terhubung --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nomor WhatsApp Tujuan</label>
+                        <input type="text" id="gatewayTargetPhone" class="form-control" placeholder="Misal: 6285256739684">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Isi Pesan WhatsApp</label>
+                        <textarea id="gatewayMessageText" class="form-control" rows="4" placeholder="Halo! Ini pesan pengujian dari Dents Web BOT WhatsApp Gateway API..."></textarea>
+                    </div>
+
+                    <button id="btnSendGatewayMessage" class="btn-primary-dents">
+                        <i class="bi bi-send-fill"></i> Kirim Pesan Sekarang
+                    </button>
+
+                    <div id="gatewayResponseBox" style="display: none; margin-top: 1.25rem; padding: 1rem; border-radius: 8px; font-size: 0.85rem; font-family: monospace;"></div>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- VIEW 4: SCRIPT HUB (MANAJEMEN SCRIPT)                             -->
+            <!-- ================================================================= -->
+            <section id="viewScripts" class="view-section">
+                <div class="ruang-kendali-header">
+                    <h2><i class="bi bi-code-square text-primary"></i> Script Handler Hub</h2>
+                    <p>Daftar script logika bot di server. Script default yang sedang aktif untuk uji coba adalah <code>messageHandler.js</code>.</p>
+                </div>
+
+                <div class="content-card" style="margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">📥 Upload Script Handler Baru (.js)</h3>
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <input type="file" id="fileUploadScript" accept=".js" class="form-control" style="flex: 1;">
+                        <button class="btn-primary-dents" id="btnUploadScriptAction" style="width: auto; padding: 0.75rem 1.5rem;">
+                            <i class="bi bi-cloud-arrow-up-fill"></i> Upload ke Redis
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">📋 Script Terdeteksi di Server</h3>
+                    <div id="scriptsTableContainer"></div>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- VIEW 5: LIVE TERMINAL LOGS (RAILWAY CONSOLE MONITOR)              -->
+            <!-- ================================================================= -->
+            <section id="viewTerminal" class="view-section">
+                <div class="ruang-kendali-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2><i class="bi bi-terminal-fill text-primary"></i> Live Logs Monitor</h2>
+                        <p>Output real-time dari backend console Railway Baileys Engine.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn-action-sm" id="btnTerminalAutoScroll"><i class="bi bi-arrow-down-circle"></i> Auto-Scroll: ON</button>
+                        <button class="btn-action-sm" id="btnTerminalClear"><i class="bi bi-trash"></i> Clear</button>
+                    </div>
+                </div>
+
+                <div class="terminal-window" id="terminalLogWindow">
+                    <!-- Logs will be streamed here -->
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- VIEW 6: CLUSTER & SYSTEM INFO                                     -->
+            <!-- ========================================================================= -->
+            <section id="viewCluster" class="view-section">
+                <div class="ruang-kendali-header">
+                    <h2><i class="bi bi-cpu-fill text-primary"></i> Cluster & Engine Specs</h2>
+                    <p>Informasi arsitektur Baileys multi-device gateway dan resource runtime.</p>
+                </div>
+
+                <div class="content-card" style="max-width: 800px; margin: 0 auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Gateway Engine</td>
+                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">Baileys Multi-Device (Latest)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Primary Test Script</td>
+                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right; color: #38bdf8;">messageHandler.js (RSUD Ranap & Rajal)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Persistent Storage</td>
+                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">Upstash Redis Cloud + Local Session</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Socket.IO Version</td>
+                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right;">v4.7.4 (Websocket + Polling)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                            <td style="padding: 0.75rem 0; color: var(--dark-secondary-text-color);">Active Backend URL</td>
+                            <td style="padding: 0.75rem 0; font-weight: 700; text-align: right; word-break: break-all;" id="infoBackendUrl"></td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+        </main>
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- 3. MODAL PENGATURAN BACKEND URL                                           -->
+    <!-- ========================================================================= -->
+    <div class="modal-overlay" id="configModal">
+        <div class="modal-card">
+            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="bi bi-sliders text-primary"></i> Pengaturan Backend Gateway
+            </h3>
+            <p style="color: var(--dark-secondary-text-color); font-size: 0.85rem; margin-bottom: 1.25rem;">
+                Sesuaikan URL Backend Railway atau server lokal Anda. Nilai ini tersimpan otomatis di browser Anda.
+            </p>
+
+            <div class="form-group">
+                <label>URL Backend Server (Railway / Localhost)</label>
+                <input type="text" id="configBackendUrlInput" class="form-control" placeholder="https://btwa-ranap-production.up.railway.app/">
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn-action-sm" id="btnCancelConfig">Batal</button>
+                <button class="btn-primary-dents" id="btnSaveConfig" style="width: auto; padding: 0.6rem 1.2rem;">Simpan & Sambungkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. CORE JAVASCRIPT & SOCKET LOGIC                                         -->
+    <!-- ========================================================================= -->
     <script>
-        // ==========================================
-        // URL BACKEND
-        // ==========================================
-        const BACKEND_URL = 'https://btwa-ranap-production.up.railway.app/'; 
-        
-        // ==========================================
-        // STATE & UI ELEMENTS
-        // ==========================================
+        // BACKEND URL STORAGE
+        const DEFAULT_BACKEND_URL = 'https://btwa-ranap-production.up.railway.app/';
+        let BACKEND_URL = localStorage.getItem('dents_backend_url') || DEFAULT_BACKEND_URL;
+
+        // STATE & AUDIO NOTIFICATION
         let appState = { bots: [], scripts: [] };
-        let selectedBotId = null;
+        let activeFilter = 'all';
+        let isSoundEnabled = localStorage.getItem('dents_sound_enabled') === 'true';
+        let isAutoScroll = true;
+        let selectedConnectBotId = null;
 
-        const loader = document.getElementById('loader');
-        const botListContainer = document.getElementById('botListContainer');
-        const newBotScript = document.getElementById('newBotScript');
-        const scriptList = document.getElementById('scriptList'); 
-        
-        // QR Tab
-        const qrNotice = document.getElementById('qrNotice');
-        const qrContainerWrapper = document.getElementById('qrContainerWrapper');
-        const qrBotNameLabel = document.getElementById('qrBotNameLabel');
-        const qrSpinner = document.getElementById('qrSpinner');
-        const qrImage = document.getElementById('qrImage');
-        const connectedBadge = document.getElementById('connectedBadge');
+        // WEB AUDIO API SYNTHESIZER (NO EXTERNAL ASSETS NEEDED)
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtxInstance = null;
 
-        // Pairing Tab
-        const pairNotice = document.getElementById('pairNotice');
-        const pairContainerWrapper = document.getElementById('pairContainerWrapper');
-        const pairBotNameLabel = document.getElementById('pairBotNameLabel');
-        const phoneInput = document.getElementById('phoneInput');
-        const reqPairingBtn = document.getElementById('reqPairingBtn');
-        const pairingCodeDisplay = document.getElementById('pairingCodeDisplay');
+        function playSound(type = 'beep') {
+            if (!isSoundEnabled) return;
+            try {
+                if (!audioCtxInstance) audioCtxInstance = new AudioCtx();
+                if (audioCtxInstance.state === 'suspended') audioCtxInstance.resume();
 
-        // Logs Tab
-        const terminalWindow = document.getElementById('terminalWindow');
-        const btnClearLogs = document.getElementById('btnClearLogs');
+                const osc = audioCtxInstance.createOscillator();
+                const gain = audioCtxInstance.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtxInstance.destination);
 
-        // ==========================================
-        // UI HELPERS
-        // ==========================================
-        
-        // FORMAT UPTIME SINKRON DENGAN WA (!runtime) - Berjalan realtime
+                const now = audioCtxInstance.currentTime;
+                if (type === 'connect') {
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'error') {
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.linearRampToValueAtTime(220, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else {
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                }
+            } catch (e) {}
+        }
+
+        // UPDATE SOUND UI
+        function updateSoundUI() {
+            const btn = document.getElementById('soundToggleBtn');
+            const icon = document.getElementById('soundIcon');
+            const text = document.getElementById('soundText');
+            if (isSoundEnabled) {
+                icon.className = 'bi bi-volume-up-fill';
+                text.textContent = 'Matikan suara';
+                btn.style.color = 'var(--dark-primary-accent)';
+                btn.style.borderColor = 'var(--dark-primary-accent)';
+            } else {
+                icon.className = 'bi bi-volume-mute-fill';
+                text.textContent = 'Aktifkan suara';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }
+        }
+        updateSoundUI();
+
+        document.getElementById('soundToggleBtn').addEventListener('click', () => {
+            isSoundEnabled = !isSoundEnabled;
+            localStorage.setItem('dents_sound_enabled', isSoundEnabled);
+            updateSoundUI();
+            if (isSoundEnabled) playSound('beep');
+        });
+
+        // THEME TOGGLE
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        function updateThemeUI() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            themeIcon.className = currentTheme === 'dark' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
+        }
+        updateThemeUI();
+
+        themeBtn.addEventListener('click', () => {
+            const html = document.documentElement;
+            const nextTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', nextTheme);
+            updateThemeUI();
+        });
+
+        // NAVIGATION SWITCHER
+        document.querySelectorAll('.dock-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+                item.classList.add('active');
+
+                const targetViewId = item.getAttribute('data-view');
+                document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+                document.getElementById(targetViewId).classList.add('active');
+            });
+        });
+
+        document.getElementById('btnNavAddBot').addEventListener('click', () => {
+            document.querySelector('[data-view="viewConnect"]').click();
+        });
+
+        // RADIO TOGGLE PAIRING VS QR
+        document.querySelectorAll('input[name="connectMethod"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const isPairing = e.target.value === 'pairing';
+                document.getElementById('pairingPhoneGroup').style.display = isPairing ? 'block' : 'none';
+            });
+        });
+
+        // FORMAT UPTIME
         function formatUptime(startTime) {
             if (!startTime) return 'N/A';
             const diff = Math.floor((Date.now() - startTime) / 1000);
             if (diff < 0) return '00:00:00';
-            
             const d = Math.floor(diff / 86400);
             const h = Math.floor((diff % 86400) / 3600).toString().padStart(2, '0');
             const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
             const s = Math.floor(diff % 60).toString().padStart(2, '0');
-            
-            return d > 0 ? `${d} Hari, ${h}:${m}:${s}` : `${h}:${m}:${s}`;
+            return d > 0 ? `${d}d ${h}:${m}:${s}` : `${h}:${m}:${s}`;
         }
 
-        function setActiveTab(targetId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelector(`[data-target="${targetId}"]`).classList.add('active');
-            document.getElementById(targetId).classList.add('active');
-        }
-
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => setActiveTab(btn.getAttribute('data-target')));
-        });
-
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const html = document.documentElement;
-            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        });
-
-        function updateBotListUI() {
-            if (appState.bots.length === 0) {
-                botListContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 2rem 0;">Belum ada bot yang berjalan.</p>';
-                return;
-            }
-            
-            botListContainer.innerHTML = appState.bots.map(b => `
-                <div class="bot-card">
-                    <div class="bot-header">
-                        <div class="bot-title">🤖 ${b.id}</div>
-                        <div class="status-badge ${b.status}">${b.status}</div>
-                    </div>
-                    <div class="bot-info">
-                        <div><strong>📜 Script:</strong> ${b.script}</div>
-                        <div><strong>⏱️ Uptime:</strong> <span class="uptime-counter" data-start="${b.startTime || ''}">${formatUptime(b.startTime)}</span></div>
-                    </div>
-                    <div class="bot-actions">
-                        <button class="btn-sm" onclick="selectBot('${b.id}')">📲 Lihat QR / Pairing</button>
-                        <button class="btn-danger" onclick="deleteBot('${b.id}')">🗑️ Hapus & Logout</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function selectBot(botId) {
-            selectedBotId = botId;
-            const bot = appState.bots.find(b => b.id === botId);
-            
-            // Update UI QR
-            qrNotice.style.display = 'none';
-            qrContainerWrapper.style.display = 'flex';
-            qrBotNameLabel.textContent = botId;
-            
-            // Update UI Pairing
-            pairNotice.style.display = 'none';
-            pairContainerWrapper.style.display = 'block';
-            pairBotNameLabel.textContent = botId;
-            pairingCodeDisplay.style.display = 'none';
-
-            renderBotStatusUI(bot);
-            setActiveTab('qrTab');
-        }
-
-        function renderBotStatusUI(bot) {
-            if (!bot) return;
-            qrSpinner.style.display = 'none';
-            qrImage.style.display = 'none';
-            connectedBadge.style.display = 'none';
-
-            if (bot.status === 'connected') {
-                connectedBadge.style.display = 'block';
-            } else if (bot.status === 'qr' && bot.qr) {
-                qrImage.src = bot.qr;
-                qrImage.style.display = 'block';
-            } else {
-                qrSpinner.style.display = 'block'; // connecting
-            }
-        }
-
-        // AUTO-UPDATE UPTIME SETIAP DETIK (Sinkron dengan WA !runtime)
         setInterval(() => {
-            document.querySelectorAll('.uptime-counter').forEach(el => {
+            document.querySelectorAll('.uptime-live-ticker').forEach(el => {
                 const start = el.getAttribute('data-start');
                 if (start) el.textContent = formatUptime(parseInt(start));
             });
         }, 1000);
 
-        // Terminal Log Appender
-        function appendTerminalLog(logData) {
-            const div = document.createElement('div');
-            div.className = `log-entry log-${logData.type}`;
-            div.innerHTML = `<span class="log-time">[${logData.time}]</span> <span class="log-msg">${logData.message}</span>`;
-            terminalWindow.appendChild(div);
-            
-            // Auto scroll to bottom smoothly
-            terminalWindow.scrollTop = terminalWindow.scrollHeight;
+        // =========================================================================
+        // SOCKET.IO REAL-TIME CONNECTION
+        // =========================================================================
+        let socket = null;
+
+        function connectSocket() {
+            document.getElementById('infoBackendUrl').textContent = BACKEND_URL;
+            document.getElementById('serverStatusText').textContent = 'Connecting...';
+            document.getElementById('serverStatusDot').className = 'server-status-dot';
+
+            if (socket) socket.disconnect();
+
+            socket = io(BACKEND_URL, { 
+                transports: ['websocket', 'polling'],
+                reconnectionDelay: 2000 
+            });
+
+            socket.on('connect', () => {
+                document.getElementById('serverStatusText').textContent = 'Server Connected';
+                document.getElementById('serverStatusDot').className = 'server-status-dot online';
+                playSound('beep');
+            });
+
+            socket.on('disconnect', () => {
+                document.getElementById('serverStatusText').textContent = 'Disconnected';
+                document.getElementById('serverStatusDot').className = 'server-status-dot';
+            });
+
+            socket.on('init_state', (data) => {
+                appState = data;
+                updateDatalist();
+                renderBotCards();
+                renderScriptsTable();
+                updateGatewayBotSelect();
+            });
+
+            socket.on('init_logs', (logs) => {
+                const win = document.getElementById('terminalLogWindow');
+                win.innerHTML = '';
+                logs.forEach(appendLog);
+            });
+
+            socket.on('terminal_log', (log) => {
+                appendLog(log);
+            });
+
+            socket.on('bot_updated', (botData) => {
+                if (!botData) return;
+                const idx = appState.bots.findIndex(b => b.id === botData.id);
+                if (idx > -1) appState.bots[idx] = botData;
+                else appState.bots.push(botData);
+
+                renderBotCards();
+                updateGatewayBotSelect();
+
+                if (selectedConnectBotId === botData.id) {
+                    renderConnectLiveStatus(botData);
+                }
+
+                if (botData.status === 'connected') playSound('connect');
+            });
+
+            socket.on('bot_removed', (botId) => {
+                appState.bots = appState.bots.filter(b => b.id !== botId);
+                renderBotCards();
+                updateGatewayBotSelect();
+                if (selectedConnectBotId === botId) {
+                    resetConnectBox();
+                }
+            });
+
+            socket.on('pairing_code', (data) => {
+                if (data.botId === selectedConnectBotId) {
+                    document.getElementById('connectPlaceholder').style.display = 'none';
+                    document.getElementById('qrLiveWrapper').style.display = 'none';
+                    document.getElementById('pairingLiveWrapper').style.display = 'flex';
+                    document.getElementById('pairingCodeDisplay').textContent = data.code;
+                    playSound('beep');
+                }
+            });
+
+            socket.on('message_sent_result', (res) => {
+                const box = document.getElementById('gatewayResponseBox');
+                box.style.display = 'block';
+                if (res.success) {
+                    box.style.background = 'rgba(34, 197, 94, 0.15)';
+                    box.style.color = '#4ade80';
+                    box.textContent = `✅ Pesan sukses terkirim dari [${res.botId}] ke ${res.target}!`;
+                    playSound('connect');
+                } else {
+                    box.style.background = 'rgba(239, 68, 68, 0.15)';
+                    box.style.color = '#f87171';
+                    box.textContent = `❌ Gagal: ${res.error}`;
+                    playSound('error');
+                }
+            });
+
+            socket.on('error', (msg) => {
+                alert('⚠️ Perhatian: ' + msg);
+                playSound('error');
+            });
+
+            socket.on('script_uploaded', (name) => {
+                alert(`✅ Script '${name}' berhasil diunggah & disimpan ke Redis!`);
+                playSound('connect');
+                document.getElementById('fileUploadScript').value = '';
+            });
         }
 
-        btnClearLogs.addEventListener('click', () => {
-            terminalWindow.innerHTML = '';
-            const t = new Date().toLocaleTimeString('id-ID', { hour12: false });
-            appendTerminalLog({ time: t, message: "--- Logs Cleared ---", type: "info" });
-        });
+        connectSocket();
 
-        // ==========================================
-        // SOCKET.IO LOGIC
-        // ==========================================
-        const socket = io(BACKEND_URL, { transports: ['websocket', 'polling'] }); 
+        // =========================================================================
+        // RENDERING UI
+        // =========================================================================
+        function updateDatalist() {
+            const dl = document.getElementById('scriptDatalist');
+            dl.innerHTML = appState.scripts.map(s => `<option value="${s}">`).join('');
+        }
 
-        socket.on('init_state', (data) => {
-            appState = data;
-            
-            // Mengupdate pilihan Datalist dari script yang terdeteksi
-            scriptList.innerHTML = data.scripts.map(s => `<option value="${s}">`).join('');
-            
-            updateBotListUI();
-            if (selectedBotId) selectBot(selectedBotId);
-        });
+        function renderBotCards() {
+            const container = document.getElementById('botListContainer');
+            const total = appState.bots.length;
+            const online = appState.bots.filter(b => b.status === 'connected').length;
+            const offline = total - online;
 
-        // Listen for log history on connection
-        socket.on('init_logs', (logsArray) => {
-            terminalWindow.innerHTML = '';
-            logsArray.forEach(appendTerminalLog);
-        });
+            document.getElementById('metricTotalBots').textContent = total;
+            document.getElementById('metricOnlineBots').textContent = online;
+            document.getElementById('metricOfflineBots').textContent = offline;
+            document.getElementById('filterCountAll').textContent = total;
+            document.getElementById('filterCountOnline').textContent = online;
+            document.getElementById('filterCountOffline').textContent = offline;
 
-        // Listen for new incoming logs
-        socket.on('terminal_log', (logData) => {
-            appendTerminalLog(logData);
-        });
+            let filtered = appState.bots;
+            if (activeFilter === 'online') filtered = filtered.filter(b => b.status === 'connected');
+            if (activeFilter === 'offline') filtered = filtered.filter(b => b.status !== 'connected');
 
-        socket.on('bot_updated', (botData) => {
-            if(!botData) return;
-            const idx = appState.bots.findIndex(b => b.id === botData.id);
-            if (idx > -1) appState.bots[idx] = botData;
-            else appState.bots.push(botData);
-            
-            updateBotListUI();
-            
-            if (selectedBotId === botData.id) {
-                renderBotStatusUI(botData);
+            const query = document.getElementById('searchBotInput').value.toLowerCase().trim();
+            if (query) {
+                filtered = filtered.filter(b => 
+                    b.id.toLowerCase().includes(query) || 
+                    (b.phoneNumber && b.phoneNumber.includes(query)) ||
+                    (b.script && b.script.toLowerCase().includes(query))
+                );
             }
-            loader.classList.remove('active');
-        });
 
-        socket.on('bot_removed', (botId) => {
-            appState.bots = appState.bots.filter(b => b.id !== botId);
-            updateBotListUI();
-            if (selectedBotId === botId) {
-                selectedBotId = null;
-                qrNotice.style.display = 'block'; qrContainerWrapper.style.display = 'none';
-                pairNotice.style.display = 'block'; pairContainerWrapper.style.display = 'none';
-                setActiveTab('settingsTab');
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3.5rem 1rem; background: var(--dark-card-bg); border: 1px dashed var(--dark-border-solid); border-radius: 16px;">
+                        <i class="bi bi-robot" style="font-size: 3.5rem; color: var(--dark-secondary-text-color); opacity: 0.5;"></i>
+                        <h4 style="margin-top: 1rem; font-size: 1.15rem;">Belum ada bot yang cocok</h4>
+                        <p style="color: var(--dark-secondary-text-color); font-size: 0.85rem; margin-top: 0.35rem;">
+                            ${total === 0 ? 'Buat bot WhatsApp pertama Anda sekarang melalui menu Ruang Kendali.' : 'Coba sesuaikan filter atau kata kunci pencarian Anda.'}
+                        </p>
+                        ${total === 0 ? '<button class="btn-primary-dents" onclick="document.querySelector(\'[data-view=viewConnect]\').click()" style="width: auto; margin-top: 1rem; padding: 0.6rem 1.5rem;"><i class="bi bi-plus-lg"></i> Buat Bot Sekarang</button>' : ''}
+                    </div>
+                `;
+                return;
             }
-            loader.classList.remove('active');
+
+            container.innerHTML = filtered.map(b => {
+                const isOnline = b.status === 'connected';
+                const statusDotClass = isOnline ? 'is-online' : (b.status === 'qr' ? 'is-qr' : (b.status === 'connecting' ? 'is-connecting' : 'is-offline'));
+                const phoneDisplay = b.phoneNumber ? `+${b.phoneNumber}` : 'Belum Terhubung';
+                
+                return `
+                    <div class="bot-row">
+                        <!-- MAIN INFO -->
+                        <div class="bot-main-info">
+                            <div class="bot-avatar-wrap">
+                                <div class="bot-avatar">
+                                    <i class="bi bi-robot"></i>
+                                </div>
+                                <span class="bot-status-dot ${statusDotClass}" title="Status: ${b.status}"></span>
+                            </div>
+                            <div class="bot-identity">
+                                <div class="bot-name-line">
+                                    <h5 class="bot-name mb-0">${b.id}</h5>
+                                    <span class="plan-badge-plain">
+                                        <i class="bi bi-lightning-charge-fill text-primary"></i>
+                                        <span class="dents-shiny-text">PRO</span>
+                                    </span>
+                                </div>
+                                <p class="bot-profile-name mb-0">
+                                    <i class="bi bi-whatsapp"></i> ${phoneDisplay}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 4-BOX METRIC GRID PERSIS DENTS WEB BOT -->
+                        <div class="desktop-stats-grid">
+                            <div class="stat-card-box">
+                                <div class="stat-card-label">SCRIPT</div>
+                                <div class="stat-card-val text-primary" title="${b.script}">${b.script || 'messageHandler.js'}</div>
+                            </div>
+                            <div class="stat-card-box">
+                                <div class="stat-card-label">NO. WHATSAPP</div>
+                                <div class="stat-card-val">${b.phoneNumber || '-'}</div>
+                            </div>
+                            <div class="stat-card-box">
+                                <div class="stat-card-label">UPTIME</div>
+                                <div class="stat-card-val uptime-live-ticker" data-start="${b.startTime || ''}">${formatUptime(b.startTime)}</div>
+                            </div>
+                            <div class="stat-card-box">
+                                <div class="stat-card-label">STATUS</div>
+                                <div class="stat-card-val" style="color: ${isOnline ? '#22c55e' : '#f59e0b'}; text-transform: uppercase;">${b.status}</div>
+                            </div>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="bot-action-buttons">
+                            <button class="btn-action-sm" onclick="openConnectForBot('${b.id}', '${b.script || 'messageHandler.js'}')" title="Buka QR / Pairing">
+                                <i class="bi bi-qr-code"></i> Connect
+                            </button>
+                            <button class="btn-action-sm" onclick="triggerRestartBot('${b.id}')" title="Restart Bot">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button class="btn-action-sm" onclick="openGatewayForBot('${b.id}')" title="Kirim Pesan Uji">
+                                <i class="bi bi-chat-dots"></i>
+                            </button>
+                            <button class="btn-action-sm btn-danger-hover" onclick="triggerDeleteBot('${b.id}')" title="Logout & Hapus Permanen">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // FILTER BUTTONS
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilter = btn.getAttribute('data-filter');
+                renderBotCards();
+            });
         });
 
-        socket.on('pairing_code', (data) => {
-            if (data.botId === selectedBotId) {
-                pairingCodeDisplay.style.display = 'block';
-                pairingCodeDisplay.textContent = data.code;
-                loader.classList.remove('active');
-            }
-        });
+        document.getElementById('searchBotInput').addEventListener('input', renderBotCards);
 
-        socket.on('error', (msg) => {
-            alert('Error: ' + msg);
-            loader.classList.remove('active');
-        });
+        // =========================================================================
+        // RUANG KENDALI ACTIONS
+        // =========================================================================
+        document.getElementById('btnGenerateConnect').addEventListener('click', () => {
+            const botId = document.getElementById('inputBotId').value.trim();
+            const scriptName = document.getElementById('inputBotScript').value.trim() || 'messageHandler.js';
+            const method = document.querySelector('input[name="connectMethod"]:checked').value;
+            const phone = document.getElementById('inputPhoneNumber').value.trim();
 
-        socket.on('script_uploaded', (name) => {
-            alert(`Script ${name} berhasil diupload & disinkronkan ke Redis!`);
-            loader.classList.remove('active');
-            document.getElementById('scriptUpload').value = '';
-        });
+            if (!botId) return alert('Nama / ID Bot wajib diisi!');
+            selectedConnectBotId = botId;
 
-        // ==========================================
-        // EVENT LISTENERS
-        // ==========================================
-        document.getElementById('btnCreateBot').addEventListener('click', () => {
-            const botId = document.getElementById('newBotId').value.trim();
-            const scriptName = newBotScript.value.trim(); 
-            
-            if (!botId) return alert('ID Bot wajib diisi!');
-            if (!scriptName) return alert('Nama Script Handler wajib diisi!');
-            
-            loader.classList.add('active');
+            // Trigger create
             socket.emit('create_bot', { botId, scriptName });
-            
-            selectedBotId = botId;
-            qrNotice.style.display = 'none';
-            qrContainerWrapper.style.display = 'flex';
-            qrBotNameLabel.textContent = botId;
-            pairNotice.style.display = 'none';
-            pairContainerWrapper.style.display = 'block';
-            pairBotNameLabel.textContent = botId;
-            
-            renderBotStatusUI({ status: 'connecting' }); // mock state sblm respon
-            setActiveTab('qrTab');
-            document.getElementById('newBotId').value = '';
+
+            // Show loading display
+            document.getElementById('connectPlaceholder').style.display = 'none';
+            document.getElementById('pairingLiveWrapper').style.display = 'none';
+            document.getElementById('qrLiveWrapper').style.display = 'flex';
+            document.getElementById('qrLoadingSpinner').style.display = 'block';
+            document.getElementById('qrLiveImg').style.display = 'none';
+            document.getElementById('qrConnectedCheck').style.display = 'none';
+            document.getElementById('qrTargetLabel').textContent = `Menghubungkan ke Bot: ${botId}...`;
+
+            if (method === 'pairing') {
+                if (!phone || phone.length < 9) {
+                    alert('Masukkan nomor WhatsApp yang valid diawali 62 untuk mode Pairing.');
+                    return;
+                }
+                setTimeout(() => {
+                    socket.emit('request_pairing', { botId, phoneNumber: phone });
+                }, 1000);
+            }
         });
 
-        reqPairingBtn.addEventListener('click', () => {
-            if (!selectedBotId) return alert('Pilih Bot terlebih dahulu!');
-            const phone = phoneInput.value.replace(/\D/g, ''); 
-            if (phone.length < 10) return alert('Nomor WA tidak valid.');
-            
-            loader.classList.add('active');
-            socket.emit('request_pairing', { botId: selectedBotId, phoneNumber: phone });
-        });
+        function renderConnectLiveStatus(bot) {
+            document.getElementById('connectPlaceholder').style.display = 'none';
+            document.getElementById('qrTargetLabel').textContent = `Target Bot: ${bot.id} (${bot.script})`;
 
-        window.deleteBot = function(botId) {
-            if(confirm(`⚠️ Yakin ingin Logout dan Menghapus bot [${botId}] secara permanen?`)) {
-                loader.classList.add('active');
+            if (bot.status === 'connected') {
+                document.getElementById('qrLiveWrapper').style.display = 'flex';
+                document.getElementById('pairingLiveWrapper').style.display = 'none';
+                document.getElementById('qrLoadingSpinner').style.display = 'none';
+                document.getElementById('qrLiveImg').style.display = 'none';
+                document.getElementById('qrConnectedCheck').style.display = 'block';
+            } else if (bot.status === 'qr' && bot.qr) {
+                document.getElementById('qrLiveWrapper').style.display = 'flex';
+                document.getElementById('pairingLiveWrapper').style.display = 'none';
+                document.getElementById('qrLoadingSpinner').style.display = 'none';
+                document.getElementById('qrConnectedCheck').style.display = 'none';
+                document.getElementById('qrLiveImg').src = bot.qr;
+                document.getElementById('qrLiveImg').style.display = 'block';
+            } else {
+                document.getElementById('qrLoadingSpinner').style.display = 'block';
+            }
+        }
+
+        function resetConnectBox() {
+            document.getElementById('connectPlaceholder').style.display = 'block';
+            document.getElementById('qrLiveWrapper').style.display = 'none';
+            document.getElementById('pairingLiveWrapper').style.display = 'none';
+            selectedConnectBotId = null;
+        }
+
+        window.openConnectForBot = function(botId, script) {
+            selectedConnectBotId = botId;
+            document.getElementById('inputBotId').value = botId;
+            document.getElementById('inputBotScript').value = script;
+            document.querySelector('[data-view="viewConnect"]').click();
+            
+            const bot = appState.bots.find(b => b.id === botId);
+            if (bot) renderConnectLiveStatus(bot);
+        };
+
+        window.triggerRestartBot = function(botId) {
+            if (confirm(`🔄 Mulai ulang (restart) bot [${botId}] sekarang?`)) {
+                socket.emit('restart_bot', { botId });
+            }
+        };
+
+        window.triggerDeleteBot = function(botId) {
+            if (confirm(`⚠️ Logout dan hapus sesi bot [${botId}] secara permanen?`)) {
                 socket.emit('delete_bot', { botId });
             }
+        };
+
+        document.getElementById('btnCopyPairingCode').addEventListener('click', () => {
+            const code = document.getElementById('pairingCodeDisplay').textContent.trim();
+            navigator.clipboard.writeText(code).then(() => {
+                alert('📋 Kode pasangan berhasil disalin ke clipboard!');
+                playSound('beep');
+            });
+        });
+
+        // =========================================================================
+        // GATEWAY API TESTER
+        // =========================================================================
+        function updateGatewayBotSelect() {
+            const sel = document.getElementById('gatewayBotSelect');
+            const connectedBots = appState.bots.filter(b => b.status === 'connected');
+            if (connectedBots.length === 0) {
+                sel.innerHTML = `<option value="">-- Tidak ada bot yang sedang terhubung --</option>`;
+                return;
+            }
+            sel.innerHTML = connectedBots.map(b => `<option value="${b.id}">${b.id} (+${b.phoneNumber || 'N/A'}) - ${b.script}</option>`).join('');
         }
 
-        document.getElementById('btnUploadScript').addEventListener('click', () => {
-            const fileInput = document.getElementById('scriptUpload');
-            if (fileInput.files.length === 0) return alert('Pilih file .js terlebih dahulu!');
-            
-            const file = fileInput.files[0];
+        window.openGatewayForBot = function(botId) {
+            document.querySelector('[data-view="viewGateway"]').click();
+            document.getElementById('gatewayBotSelect').value = botId;
+        };
+
+        document.getElementById('btnSendGatewayMessage').addEventListener('click', () => {
+            const botId = document.getElementById('gatewayBotSelect').value;
+            const targetNumber = document.getElementById('gatewayTargetPhone').value.trim();
+            const message = document.getElementById('gatewayMessageText').value.trim();
+
+            if (!botId) return alert('Pilih bot pengirim terlebih dahulu!');
+            if (!targetNumber) return alert('Nomor tujuan wajib diisi!');
+            if (!message) return alert('Isi pesan tidak boleh kosong!');
+
+            const box = document.getElementById('gatewayResponseBox');
+            box.style.display = 'block';
+            box.style.background = 'var(--dark-secondary-bg)';
+            box.style.color = 'var(--dark-text-color)';
+            box.textContent = '⏳ Mengirim pesan melalui Gateway...';
+
+            socket.emit('send_test_message', { botId, targetNumber, message });
+        });
+
+        // =========================================================================
+        // SCRIPT HUB & UPLOAD
+        // =========================================================================
+        function renderScriptsTable() {
+            const c = document.getElementById('scriptsTableContainer');
+            c.innerHTML = `
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dark-border-solid); text-align: left; color: var(--dark-secondary-text-color);">
+                            <th style="padding: 0.75rem;">Nama File Script</th>
+                            <th style="padding: 0.75rem;">Status / Role</th>
+                            <th style="padding: 0.75rem; text-align: right;">Aksi Cepat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${appState.scripts.map(s => `
+                            <tr style="border-bottom: 1px solid var(--dark-border-solid);">
+                                <td style="padding: 0.75rem; font-family: monospace; font-weight: 600;">
+                                    <i class="bi bi-filetype-js text-warning"></i> ${s}
+                                </td>
+                                <td style="padding: 0.75rem;">
+                                    ${s === 'messageHandler.js' ? '<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">PRIMARY TEST ENGINE</span>' : '<span style="color: var(--dark-secondary-text-color); font-size: 0.8rem;">Modul Tambahan</span>'}
+                                </td>
+                                <td style="padding: 0.75rem; text-align: right;">
+                                    <button class="btn-action-sm" onclick="selectScriptForNewBot('${s}')">
+                                        <i class="bi bi-play-fill"></i> Gunakan Script
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        window.selectScriptForNewBot = function(scriptName) {
+            document.getElementById('inputBotScript').value = scriptName;
+            document.querySelector('[data-view="viewConnect"]').click();
+        };
+
+        document.getElementById('btnUploadScriptAction').addEventListener('click', () => {
+            const input = document.getElementById('fileUploadScript');
+            if (!input.files || input.files.length === 0) return alert('Pilih file .js terlebih dahulu!');
+            const file = input.files[0];
             const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const content = e.target.result;
-                loader.classList.add('active');
-                socket.emit('upload_script', { fileName: file.name, content });
+            reader.onload = (e) => {
+                socket.emit('upload_script', { fileName: file.name, content: e.target.result });
             };
             reader.readAsText(file);
+        });
+
+        // =========================================================================
+        // LIVE TERMINAL LOGS
+        // =========================================================================
+        function appendLog(log) {
+            const win = document.getElementById('terminalLogWindow');
+            const div = document.createElement('div');
+            div.className = `log-entry log-${log.type}`;
+            div.innerHTML = `<span class="log-time">[${log.time}]</span> <span class="log-msg">${escapeHtml(log.message)}</span>`;
+            win.appendChild(div);
+
+            if (isAutoScroll) {
+                win.scrollTop = win.scrollHeight;
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        document.getElementById('btnTerminalClear').addEventListener('click', () => {
+            document.getElementById('terminalLogWindow').innerHTML = '';
+        });
+
+        document.getElementById('btnTerminalAutoScroll').addEventListener('click', (e) => {
+            isAutoScroll = !isAutoScroll;
+            e.currentTarget.innerHTML = `<i class="bi bi-arrow-down-circle"></i> Auto-Scroll: ${isAutoScroll ? 'ON' : 'OFF'}`;
+        });
+
+        // =========================================================================
+        // BACKEND CONFIG MODAL
+        // =========================================================================
+        const configModal = document.getElementById('configModal');
+        document.getElementById('btnConfigModal').addEventListener('click', () => {
+            document.getElementById('configBackendUrlInput').value = BACKEND_URL;
+            configModal.classList.add('active');
+        });
+        document.getElementById('btnCancelConfig').addEventListener('click', () => {
+            configModal.classList.remove('active');
+        });
+        document.getElementById('btnSaveConfig').addEventListener('click', () => {
+            const val = document.getElementById('configBackendUrlInput').value.trim();
+            if (!val) return alert('URL Backend tidak boleh kosong!');
+            BACKEND_URL = val.endsWith('/') ? val : val + '/';
+            localStorage.setItem('dents_backend_url', BACKEND_URL);
+            configModal.classList.remove('active');
+            connectSocket();
         });
     </script>
 </body>
