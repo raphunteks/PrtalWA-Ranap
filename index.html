@@ -1416,6 +1416,16 @@
                 playSound('connect');
                 document.getElementById('fileUploadScript').value = '';
             });
+
+            socket.on('bot_reloaded', (data) => {
+                alert(`⚡ ${data.message || 'Script bot berhasil di-reload tanpa memutus koneksi WhatsApp!'}`);
+                playSound('connect');
+            });
+
+            socket.on('script_reloaded_all', (data) => {
+                alert(`⚡ Hot-Reload selesai: ${data.success}/${data.affected} bot menggunakan '${data.scriptName}' telah diperbarui tanpa putus koneksi!`);
+                playSound('connect');
+            });
         }
 
         connectSocket();
@@ -1521,6 +1531,9 @@
                         <div class="bot-action-buttons">
                             <button class="btn-action-sm" onclick="openConnectForBot('${b.id}', '${b.script || 'messageHandler.js'}')" title="Buka QR / Pairing">
                                 <i class="bi bi-qr-code"></i> Connect
+                            </button>
+                            <button class="btn-action-sm" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);" onclick="triggerReloadBotScript('${b.id}')" title="⚡ Hot Reload Script (Tanpa Putus Koneksi)">
+                                <i class="bi bi-lightning-charge-fill"></i> Reload SC
                             </button>
                             <button class="btn-action-sm" onclick="triggerRestartBot('${b.id}')" title="Restart Bot">
                                 <i class="bi bi-arrow-clockwise"></i>
@@ -1629,6 +1642,10 @@
             }
         };
 
+        window.triggerReloadBotScript = function(botId) {
+            socket.emit('reload_bot_script', { botId });
+        };
+
         window.triggerDeleteBot = function(botId) {
             if (confirm(`⚠️ Logout dan hapus sesi bot [${botId}] secara permanen?`)) {
                 socket.emit('delete_bot', { botId });
@@ -1702,7 +1719,10 @@
                                 <td style="padding: 0.75rem;">
                                     ${s === 'messageHandler.js' ? '<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">PRIMARY TEST ENGINE</span>' : '<span style="color: var(--dark-secondary-text-color); font-size: 0.8rem;">Modul Tambahan</span>'}
                                 </td>
-                                <td style="padding: 0.75rem; text-align: right;">
+                                <td style="padding: 0.75rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                    <button class="btn-action-sm" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);" onclick="triggerReloadAllUsingScript('${s}')" title="Hot Reload ke semua bot yang menggunakan script ini">
+                                        <i class="bi bi-lightning-charge-fill"></i> Reload ke Bot
+                                    </button>
                                     <button class="btn-action-sm" onclick="selectScriptForNewBot('${s}')">
                                         <i class="bi bi-play-fill"></i> Gunakan Script
                                     </button>
@@ -1713,6 +1733,12 @@
                 </table>
             `;
         }
+
+        window.triggerReloadAllUsingScript = function(scriptName) {
+            if (confirm(`⚡ Hot-Reload script [${scriptName}] ke semua bot aktif pengguna script ini tanpa memutus koneksi WhatsApp?`)) {
+                socket.emit('reload_script_all', { scriptName });
+            }
+        };
 
         window.selectScriptForNewBot = function(scriptName) {
             document.getElementById('inputBotScript').value = scriptName;
